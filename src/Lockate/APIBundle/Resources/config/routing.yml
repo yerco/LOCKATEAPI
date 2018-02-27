@@ -1,0 +1,8 @@
+lockate_api_homepage:
+    path:     /
+    defaults: { _controller: LockateAPIBundle:Default:index }
+
+lockate_api_sensors:
+    path:   /api/v1/sensors
+    defaults: { _controller: LockateAPIBundle:Default:sensors }
+    methods:  [POST]
