@@ -18,7 +18,8 @@ class DefaultController extends Controller
     }
 
     public function sensorsAction(Request $request) {
-        $request_content = $request->getContent();;
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $request_content = $request->getContent();
         $request_content = json_decode($request_content);
         $response = array(
             'node_id'   => $request_content->node_id,
@@ -29,4 +30,5 @@ class DefaultController extends Controller
         $response->headers->set('Location', $request->getUri());
         return $response;
     }
+
 }

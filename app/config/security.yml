@@ -4,8 +4,19 @@ security:
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
+#        user:
+#            id: Lockate\APIBundle\Security\UserProvider
+#        in_memory:
+#            memory: ~
         in_memory:
-            memory: ~
+            memory:
+                users:
+                    schmier:
+                        password: destruction
+                        roles: 'ROLE_USER'
+
+    encoders:
+        Lockate\APIBundle\Entity\User: bcrypt
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -22,3 +33,13 @@ security:
 
             # https://symfony.com/doc/current/security/form_login_setup.html
             #form_login: ~
+
+            guard:
+                authenticators:
+                    - Lockate\APIBundle\Security\TokenAuthenticator
+
+            # if you want, disable storing the user in the session
+            # stateless: true
+
+            # maybe other things, like form_login, remember_me, etc
+            # ...
