@@ -25,6 +25,8 @@ class DefaultController extends Controller
             'timestamp' => $request_content->timestamp,
             'var1'      => $request_content->var1
         );
-        return new JsonResponse($response);
+        $response = new JsonResponse($response);
+        $response->headers->set('Location', $request->getUri());
+        return $response;
     }
 }
