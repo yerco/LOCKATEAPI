@@ -18,6 +18,6 @@ http://localhost/api/v1/sensors
 ```
 ## Shortcuts
 ```
-sudo rm -rf var/cache/* && sudo sudo rm -rf var/cache/*
+sudo rm -rf var/cache/* && sudo sudo rm -rf var/logs/*
 ```
 
