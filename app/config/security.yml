@@ -15,8 +15,14 @@ security:
                         password: destruction
                         roles: 'ROLE_USER'
 
+        fos_userbundle:
+            id: fos_user.user_provider.username
+            # it could be email
+            # ex:  id: fos_user.user_provider.username_email
+
     encoders:
         Lockate\APIBundle\Entity\User: bcrypt
+        FOS\UserBundle\Model\UserInterface: bcrypt
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -43,3 +49,24 @@ security:
 
             # maybe other things, like form_login, remember_me, etc
             # ...
+
+            # FOSUserBundle
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+                always_use_default_target_path: true
+                default_target_path:            /site
+            remember_me:
+                secret: '%secret%'
+            logout: ~
+
+    access_control:
+          - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+          - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+          - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+          - { path: ^/admin/, role: ROLE_ADMIN }
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN

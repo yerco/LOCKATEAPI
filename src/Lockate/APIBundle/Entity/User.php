@@ -4,22 +4,25 @@
 namespace Lockate\APIBundle\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use FOS\UserBundle\Model\User as BaseUser;
+use Doctrine\ORM\Mapping as ORM;
 
-class User implements UserInterface
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="fos_user")
+ */
+class User extends BaseUser implements UserInterface
 {
-    private $username;
-    private $password;
-    private $salt;
-    private $apiKey;
-    private $roles;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
-    public function __construct($username, $password, $salt, $apiKey, array $roles)
+    public function getId()
     {
-        $this->username = $username;
-        $this->password = $password;
-        $this->salt = $salt;
-        $this->apiKey = $apiKey;
-        $this->roles = $roles;
+        return $this->id;
     }
 
     public function getRoles()

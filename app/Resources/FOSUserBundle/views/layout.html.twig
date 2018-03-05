@@ -1,0 +1,11 @@
+{# extending app/Resources/views/base.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {#At: <p style="color:forestgreen">**app/Resources/FOSUserBundle/views/layout.html.twig**</p>#}
+    {#which overrides <p style="color:crimson">**vendor/friendsofsymfony/user-bundle/Resources/views/layout.html.twig**</p>#}
+        {#due to the folder this itself is located#}
+
+    {% block fos_user_content %}
+    {% endblock %}
+{% endblock %}

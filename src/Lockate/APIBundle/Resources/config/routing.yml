@@ -1,6 +1,10 @@
-lockate_api_homepage:
+lockate_site_homepage:
     path:     /
     defaults: { _controller: LockateAPIBundle:Default:index }
+
+lockate_site_initial:
+    path: /site
+    defaults: { _controller: LockateAPIBundle:Site:inside }
 
 lockate_api_sensors:
     path:   /api/v1/sensors
