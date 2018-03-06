@@ -3,6 +3,8 @@
 namespace Lockate\APIBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class DefaultControllerTest extends WebTestCase
 {
@@ -20,36 +22,76 @@ class DefaultControllerTest extends WebTestCase
     public function testRootResponse() {
         $client = static::createClient();
         $client->request('GET', '/');
-        $json_response = json_decode($client->getResponse()->getContent());
-        $this->assertEquals($json_response->message, "alive");
+        $response = $client->getResponse()->getContent();
+        $this->assertContains('Remember me', $response, "alive");
     }
 
     public function testRootResponseUsingCurl() {
         $response = $this->CallAPI('GET', 'localhost');
-        $response = json_decode($response);
-        $this->assertEquals($response->message, "alive");
+        $this->assertContains('Remember me', $response, "alive");
     }
+
+    /* Using Guzzle */
+    public function testRootResponseUsingGuzzle() {
+        $client = new Client([
+            'base_uri'  => 'http://localhost',
+            'timeout'   => 2.0
+        ]);
+        $response = $client->request('GET', '/');
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /* 403 forbidden */
+    public function testCheckCredentialsRequiredUsingGuzzle() {
+        $client = new Client([
+            'base_uri'  => 'http://localhost',
+            'timeout'   => 2.0,
+            'headers'   => [
+                'X-AUTH-TOKEN'  => 'nottherightone'
+            ]
+        ]);
+        $json_payload = [
+            'node_id'   => 'uno',
+            'timestamp' => 1234567890,
+            'var1'      => 'fatboyslim'
+        ];
+        try {
+            $response = $client->request(
+                'POST',
+                '/api/v1/sensors',
+                ['json' => $json_payload]
+            );
+        }
+        catch (ClientException $e) {
+            $this->assertEquals(403, $e->getCode());
+        }
+    }
+
+    /* 302 redirected - do not have customer header */
+    public function testNotCustomHeaderAttachedUsingGuzzle() {
+        $client = new Client([
+            'base_uri'  => 'http://localhost',
+            'timeout'   => 2.0,
+            'allow_redirects' => false
+        ]);
+        $json_payload = [
+            'node_id'   => 'uno',
+            'timestamp' => 1234567890,
+            'var1'      => 'fatboyslim'
+        ];
+
+            $response = $client->request(
+                'POST',
+                '/api/v1/sensors',
+                ['json' => $json_payload]
+            );
+        $this->assertEquals(302, $response->getStatusCode());
+    }
+
 
     /**
      * A loop, what was sent is received
      */
-    /*previous test without authentication Token */
-    /*
-    public function testAPIsSensorsRoute() {
-        $payload = array(
-            'node_id'   => '2714',
-            'timestamp' => '1565',
-            'var1'      => '12365625'
-        );
-        $data_json = json_encode($payload);
-        $response = $this->CallAPI(
-            'POST',
-            'localhost/api/v1/sensors',
-            $data_json
-        );
-        $this->assertEquals(json_encode($payload), $response);
-    }
-    */
     public function testAPIsSensorsRoute() {
         $payload = array(
             'node_id'   => '2714',
@@ -67,27 +109,26 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(json_encode($payload), $response);
     }
 
-    /* 401 unauthorized */
-    public function testAuthenticationRequired() {
-        $payload = array(
-            "node_id"   => "colorado",
-            "timestamp" => "1234567890",
-            "var1"      => "peace sells"
-        );
-        $client = static::createClient();
-        $crawler = $client->request(
+    public function testAPIsSensorsRouteUsingGuzzle() {
+        $client = new Client([
+            'base_uri'  => 'http://localhost',
+            'timeout'   => 2.0,
+            'headers'   => [
+                'X-AUTH-TOKEN'  => 'schmier'
+            ]
+        ]);
+        $json_payload = [
+            'node_id'   => 'uno',
+            'timestamp' => 1234567890,
+            'var1'      => 'fatboyslim'
+        ];
+        $response = $client->request(
             'POST',
             '/api/v1/sensors',
-            array(),
-            array(),
-            array(
-                'CONTENT_TYPE'  => 'application/json'
-            ),
-            json_encode($payload)
+            [ 'json' => $json_payload ]
         );
-        $response = $client->getInternalResponse();
-        // 401 UNAUTHORIZED
-        $this->assertEquals(401, $response->getStatus());
+        $json_received = (array) json_decode($response->getBody()->getContents());
+        $this->assertEquals($json_payload, $json_received);
     }
 
     /* 403 Forbidden */
@@ -113,33 +154,6 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals('{"message":"Check your credentials"}', $response);
     }
 
-    // the one that uses `PHP_AUTH_USER`
-    public function testBasicAuth() {
-        $payload = array(
-            "node_id"   => "colorado",
-            "timestamp" => "1234567890",
-            "var1"      => "peace sells"
-        );
-        $client = static::createClient(
-            array(),
-            array(
-                'PHP_AUTH_USER' => 'username',
-                'PHP_AUTH_PW'   => 'pa$$word',
-            )
-        );
-        $crawler = $client->request(
-            'POST',
-            '/api/v1/sensors',
-            array(),
-            array(),
-            array(
-                'CONTENT_TYPE'  => 'application/json',
-                'X-AUTH-TOKEN ' =>'PendingSTUFF'
-            ),
-            json_encode($payload)
-        );
-        //var_dump($client->getRequest());
-    }
 
     /**
      * Utility function for making REST calls
