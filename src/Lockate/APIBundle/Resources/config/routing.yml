@@ -8,5 +8,10 @@ lockate_site_initial:
 
 lockate_api_sensors:
     path:   /api/v1/sensors
-    defaults: { _controller: LockateAPIBundle:Default:sensors }
+    defaults: { _controller: LockateAPIBundle:Api:sensors }
+    methods:  [POST]
+
+lockate_api_sensors_payload:
+    path:   /api/v1/senseddata
+    defaults: { _controller: LockateAPIBundle:Api:sensedData }
     methods:  [POST]

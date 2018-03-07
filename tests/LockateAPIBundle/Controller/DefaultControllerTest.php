@@ -8,17 +8,6 @@ use GuzzleHttp\Exception\ClientException;
 
 class DefaultControllerTest extends WebTestCase
 {
-    /*
-    public function testIndex()
-    {
-        $client = static::createClient();
-
-        $crawler = $client->request('GET', '/');
-
-        $this->assertContains('Hello World', $client->getResponse()->getContent());
-    }
-    */
-
     public function testRootResponse() {
         $client = static::createClient();
         $client->request('GET', '/');

@@ -60,18 +60,4 @@ class DefaultController extends Controller
         return $this->render('@LockateAPI/Default/index.html.twig', $data);
     }
 
-    public function sensorsAction(Request $request) {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        $request_content = $request->getContent();
-        $request_content = json_decode($request_content);
-        $response = array(
-            'node_id'   => $request_content->node_id,
-            'timestamp' => $request_content->timestamp,
-            'var1'      => $request_content->var1
-        );
-        $response = new JsonResponse($response);
-        $response->headers->set('Location', $request->getUri());
-        return $response;
-    }
-
 }
