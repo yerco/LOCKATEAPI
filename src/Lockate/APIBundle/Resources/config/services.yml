@@ -2,6 +2,6 @@ services:
 #    lockate_api.example:
 #        class: Lockate\APIBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
-#    persist.senseddata_service:
-#        class: Lockate\APIBundle\Service\PersistSensedData
-#        arguments: [ '@doctrine.orm.entity_manager' ]
+    persist_senseddata:
+        class: Lockate\APIBundle\Service\PersistSensedData
+        arguments: [ '@doctrine.orm.entity_manager' ]

@@ -44,7 +44,7 @@ class PersistSensedDataTest extends KernelTestCase
                 [
                     {
                         "gateway_id": 2,
-                        "timestamp": "1519912976000", 
+                        "timestamp": "1520258893", 
                         "node_record": [
                             {
                                 "node_id": 27, 
