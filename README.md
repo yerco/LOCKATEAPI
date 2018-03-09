@@ -2,7 +2,21 @@
 
 ## Lockate API
 
-## Testing
+## dev setup
+- PHP 7.1.7
+- Symfony 3.1.4
+- FosUserBundle 2.0
+- mysql  Ver 14.14 Distrib 5.7.20, for osx10.13 (x86_64) using EditLine wrapper
+- Server: Apache/2.4.28 (Unix) PHP/7.1.7 (obtained using `curl -v localhost`)
+    - `.htaccess` `Header unset "X-Powered-By"` to eliminate the header `"X-Powered-By"`
+    - modifying with the directives below **/etc/apache2/httpd.conf** only `Server: Apache` appears
+    ```
+    ServerSignature Off
+    ServerTokens Prod
+    ```
+    - Last change needs server restart
+        
+### Testing
 
 After downloading **phpunit-6.5.phar**
 ```

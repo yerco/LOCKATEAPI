@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: yjorquera
- * Date: 28/02/2018
- * Time: 17:09
- */
 
 namespace Lockate\APIBundle\Security;
 
@@ -14,28 +8,26 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
+use FOS\UserBundle\Model\UserManagerInterface;
+
+/* Now using FOSUserBundle UserProvider */
 class UserProvider implements UserProviderInterface
 {
+    private $userManager;
+
+    public function __construct(UserManagerInterface $userManager) {
+        $this->userManager = $userManager;
+    }
+
     public function loadUserByUsername($username)
     {
-        // make a call to your webservice here
-        $userData = ["something"];
-        // pretend it returns an array on success, false if there is no user
+        $user = $this->userManager->findUserByUsernameOrEmail($username);
 
-        if ($userData) {
-
-            $password = 'lifewithoutsense';
-            $salt = 'salt:P';
-            $apiKey = 'ahorrendoushashhere';
-            $roles = array('ROLE_USER');
-
-            $user = new User($username, $password, $salt, $apiKey, $roles);
-            return $user;
+        if (!$user) {
+            throw new UsernameNotFoundException(sprintf('No user with name "%s" was found.', $username));
         }
 
-        throw new UsernameNotFoundException(
-            sprintf('Username "%s" does not exist.', $username)
-        );
+        return $user;
     }
 
     public function refreshUser(UserInterface $user)
@@ -45,7 +37,6 @@ class UserProvider implements UserProviderInterface
                 sprintf('Instances of "%s" are not supported.', get_class($user))
             );
         }
-
         return $this->loadUserByUsername($user->getUsername());
     }
 

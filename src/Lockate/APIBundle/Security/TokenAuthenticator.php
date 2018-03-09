@@ -20,7 +20,14 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        if (
+            $request->headers->has("php-auth-user") &&
+            $request->headers->has("php-auth-pw")) {
+            return $request->headers->has('X-AUTH-TOKEN');
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -30,21 +37,33 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function getCredentials(Request $request)
     {
         return array(
-            'token' => $request->headers->get('X-AUTH-TOKEN'),
+            'username'  => $request->headers->get('php-auth-user'),
+            'password'  => $request->headers->get('php-auth-pw'),
+            'token'     => $request->headers->get('X-AUTH-TOKEN'),
         );
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $apiKey = $credentials['token'];
 
-        if (null === $apiKey) {
+        $username = $credentials['username'];
+        $password = $credentials['password'];
+        $custom_header = $credentials['token'];
+
+        if (null === $custom_header || null == $username || null == $password) {
             return;
         }
 
         // Yeke: my UserProvider here is `Lockate\APIBundle\Security\UserProvider`
         // if a User object, checkCredentials() is called
-        return $userProvider->loadUserByUsername($apiKey);
+        // FIXME no a fixme but pay attention it is hardcoded
+        if ($custom_header === 'schmier') {
+            $user = $userProvider->loadUserByUsername($username);
+            return $user;
+        }
+        else {
+            return null;
+        }
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -61,9 +80,8 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
          *                              password: destruction
          *                              roles: 'ROLE_USER'
          */
-
         // check credentials - e.g. make sure the password is valid
-        if ($credentials["token"] === $user->getUsername()) {
+        if ($credentials["username"] === $user->getUsername() ) {
             // return true to cause authentication success
             return true;
         }
@@ -75,7 +93,6 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-
         // on success, let the request continue
         return null;
         //return true;

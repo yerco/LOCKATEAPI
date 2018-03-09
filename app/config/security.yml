@@ -8,12 +8,12 @@ security:
 #            id: Lockate\APIBundle\Security\UserProvider
 #        in_memory:
 #            memory: ~
-        in_memory:
-            memory:
-                users:
-                    schmier:
-                        password: destruction
-                        roles: 'ROLE_USER'
+#        in_memory:
+#            memory:
+#                users:
+#                    schmier:
+#                        password: destruction
+#                        roles: 'ROLE_USER'
 
         fos_userbundle:
             id: fos_user.user_provider.username

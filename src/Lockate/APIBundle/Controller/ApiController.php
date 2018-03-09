@@ -23,7 +23,21 @@ class ApiController extends Controller
     }
 
     public function sensedDataAction(Request $request) {
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $username = $request->headers->get('php-auth-user');
+        $password = $request->headers->get('php-auth-pw');
+        $user = $this->getDoctrine()
+            ->getRepository('LockateAPIBundle:User')
+            ->findOneBy(['username' => $username]);
+
+        $isValid = $this->get('security.password_encoder')
+            ->isPasswordValid($user, $password);
+
+        if (!$isValid) {
+            return new JsonResponse(
+                array("message" => "Check credentials")
+            );
+        }
+
         $persist = $this->get('persist_senseddata');
         $persistence_message = $persist->persistSensedData($request->getContent());
         return new JsonResponse($persistence_message);
