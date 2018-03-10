@@ -42,7 +42,8 @@ security:
 
             guard:
                 authenticators:
-                    - Lockate\APIBundle\Security\TokenAuthenticator
+                    - Lockate\APIBundle\Security\JwtTokenAuthenticator
+                    #- Lockate\APIBundle\Security\TokenAuthenticator
 
             # if you want, disable storing the user in the session
             # stateless: true

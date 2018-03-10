@@ -28,6 +28,14 @@ $ ./phpunit-6.5.phar tests/LockateAPIBundle/Controller/ApiControllerTest.php
 ```
 $ ./phpunit-6.5.phar tests/LockateAPIBundle/Service/PersistSensedDataTest.php
 ```
+```
+$ ./phpunit-6.5.phar tests/LockateAPIBundle/Controller/TokenControllerTest.php 
+```
+```
+$ ./phpunit-6.5.phar --filter testSensedDataEndpointUsingGuzzle
+```
+
+
 
 ### Examples using `curl`
 ```

@@ -15,3 +15,8 @@ lockate_api_sensors_payload:
     path:   /api/v1/senseddata
     defaults: { _controller: LockateAPIBundle:Api:sensedData }
     methods:  [POST]
+
+lockate_api_tokens:
+    path:   /api/v1/tokens
+    defaults: { _controller: LockateAPIBundle:Token:newToken }
+    methods:  [POST]
