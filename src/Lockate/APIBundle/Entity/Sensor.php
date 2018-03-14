@@ -63,6 +63,12 @@ class Sensor
     private $digital_input;
 
     /**
+     *
+     * @ORM\Column(type="json_array")
+     */
+    private $txt;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -221,4 +227,22 @@ class Sensor
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTxt()
+    {
+        return $this->txt;
+    }
+
+    /**
+     * @param mixed $txt
+     */
+    public function setTxt($txt)
+    {
+        $this->txt = $txt;
+    }
+
+
 }

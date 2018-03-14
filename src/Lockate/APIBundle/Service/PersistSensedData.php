@@ -41,7 +41,11 @@ class PersistSensedData
             $this->entity_manager->persist($gateway);
         }
         catch (Exception $e) {
-            var_dump($e);
+            //var_dump($e);
+            return array(
+                "message"       => "Error storing information",
+                "please send this msg to the developer" => $e->getMessage()
+            );
         }
         foreach ($node_record as $sensor_record) {
 
@@ -74,6 +78,12 @@ class PersistSensedData
             }
             else {
                 $sensor->setDigitalOutput(json_decode('{}'));
+            }
+            if (isset($sensor_record->txt)) {
+                $sensor->setTxt($sensor_record->txt);
+            }
+            else {
+                $sensor->setTxt(json_decode('{}'));
             }
             //relates sensor to gateway
             $sensor->setGateway($gateway);
