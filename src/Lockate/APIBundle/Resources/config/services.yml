@@ -5,3 +5,5 @@ services:
     persist_senseddata:
         class: Lockate\APIBundle\Service\PersistSensedData
         arguments: [ '@doctrine.orm.entity_manager' ]
+        public: true
+

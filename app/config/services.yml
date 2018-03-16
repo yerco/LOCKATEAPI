@@ -48,3 +48,10 @@ services:
          '@doctrine.orm.entity_manager'
          ]
 
+    sensed_data_request:
+        class: Lockate\APIBundle\EventListener\SensedDataRequestListener
+        arguments: [ '@logger' ]
+        tags:
+          - { name: senseddata.request }
+          #- { name: kernel.event_subscriber }
+        public: true

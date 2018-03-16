@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: yjorquera
- * Date: 10/03/2018
- * Time: 11:06
- */
 
 namespace Lockate\APIBundle\Security;
 

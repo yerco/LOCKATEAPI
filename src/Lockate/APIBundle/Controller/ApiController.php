@@ -3,8 +3,10 @@
 namespace Lockate\APIBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Lockate\APIBundle\Event\SensorSideEvent;
 
 class ApiController extends Controller
 {
@@ -26,6 +28,11 @@ class ApiController extends Controller
 
         $persist = $this->get('persist_senseddata');
         $persistence_message = $persist->persistSensedData($request->getContent());
+        $event_dispatcher = new EventDispatcher();
+        $event = new SensorSideEvent($request->getContent());
+        $senseddata_listener = $this->container->get('sensed_data_request');
+        $event_dispatcher->addSubscriber($senseddata_listener);
+        $event_dispatcher->dispatch(SensorSideEvent::SENSEDDATAREQUEST, $event);
         return new JsonResponse($persistence_message);
     }
 
