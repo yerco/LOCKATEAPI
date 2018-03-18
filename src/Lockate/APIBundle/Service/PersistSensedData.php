@@ -107,32 +107,4 @@ class PersistSensedData
             "storage_time"  => strftime("%B %d, %Y @ %H:%M:%S UTC", $check)
         );
     }
-
-    // TODO
-    public function getGatewayInfo($gateway_id) {
-//        $gateway = $this->entity_manager
-//            ->getRepository(Sensor::class)
-//            ->find($gateway_id);
-        $query = $this->entity_manager
-            ->createQuery('SELECT g FROM LockateAPIBundle:Gateway g
-                          WHERE g.gateway_id = :gateway_id')
-            ->setParameter('gateway_id', $gateway_id);
-
-        try {
-            $result = $query->getResult();
-            echo "Son " . count($result) . "\n";
-//            var_dump($result[0]->getSensors()[0]->getNodeId());
-            var_dump($result[0]->getSensors()[0]->getNodeId());
-
-            return new JsonResponse($result);
-        }
-        catch (\Doctrine\ORM\NoResultException $exception) {
-            echo "\n La excepcion";
-            var_dump($exception);
-            return new JsonResponse(array(
-                "message"   => "no results found"
-                )
-            );
-        }
-    }
 }

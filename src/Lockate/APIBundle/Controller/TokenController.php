@@ -27,7 +27,6 @@ class TokenController extends Controller
             );
         }
 
-
         if (!$isValid) {
             return new JsonResponse(
                 array("message" => "Invalid request for token")

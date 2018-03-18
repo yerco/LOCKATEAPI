@@ -36,4 +36,21 @@ class ApiController extends Controller
         return new JsonResponse($persistence_message);
     }
 
+    public function gatewayIdAction($gateway_id) {
+        $retrieve = $this->get('retrieve_senseddata');
+        $gateway = $retrieve->retrieveGatewayRecords($gateway_id);
+        return new JsonResponse($gateway);
+    }
+
+    public function gatewaySensorsAction($gateway_id) {
+        $retrieve = $this->get('retrieve_senseddata');
+        $gateway_sensors = $retrieve->retrieveGatewaySensors($gateway_id);
+        return new JsonResponse($gateway_sensors);
+    }
+
+    public function sensorDetailsAction($sensor_id) {
+        $retrieve = $this->get('retrieve_senseddata');
+        $sensor_info = $retrieve->retrieveGatewaySensors($sensor_id);
+        return new JsonResponse(($sensor_info));
+    }
 }

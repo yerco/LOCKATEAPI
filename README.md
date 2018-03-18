@@ -33,8 +33,11 @@ $ ./phpunit-6.5.phar tests/LockateAPIBundle/Controller/TokenControllerTest.php
 ```
 ```
 $ ./phpunit-6.5.phar --filter testSensedDataEndpointUsingGuzzle
+$ ./phpunit-6.5.phar --filter testGetGatewayDataUsingGatewayId
+$ ./phpunit-6.5.phar --filter testRetrieveGatewayThroughGatewayId
+$ ./phpunit-6.5.phar --filter testRetrieveGatewaySensors
+$ ./phpunit-6.5.phar --filter  testRetrieveSensor
 ```
-
 
 
 ### Examples using `curl`
@@ -57,9 +60,20 @@ $ curl -v -H "Content-Type: application/json" -X POST -u uno:uno http://localhos
 
 Sensor data post
 ```
-curl -v -H "Content-Type: application/json" -X POST -d '{"gateway_record":[{"gateway_id": 0,"timestamp": "1521025377","node_record": [{"node_id": 27,"timestamp": "1521025377","ai": {"rssi": -86.0},"txt": {"mac": "90:e7:c4:xx:xx:xx", "company": "HTC Corporation"}}]}]}' -H "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJ1c2VybmFtZSI6InVubyIsImV4cCI6MTUyMTIxNTMxNywiaWF0IjoxNTIxMjExNzE3fQ.ModXQ8UVByU2NmholbBKu9bNPCh9NA6pUd2gh4rJIPNFcDNkVMU7zPsmPPK4bpiMj7ivhL4KzhGvloRQIsE6v8y7zZzgUG3AxkrN_RTv0LAgijMtQEunPwyFTVkt8hIVuD60lPfU2TOiw52OT0BgjCDLP9jReHNejh8fbisq7fls5eox97EWbr3EXnZAK1TM3bem7qP87gFzXQGy2V-q8dZHXX8FS_hjSFtik2xPTmib66tpx8qCkf7QMOUOk9V0awlQyKdcTAmBBtKKRcgURh7d05NYkR-LBv0p_Scgzqq_lBECNs9CNTAgHVZZF6soV4r05RrX8LwyRGH6vju9Jm_SjEwl0qLXFEIiF9ZcnMqsmuP_U-vsGl9vrg-cEHy9xaBllBO3ykd8J_TYbcqGgI1MYizB4l9s65iaB4fbaNAuxdO0zEi6rjKrli8iuA-84IPqYH7zVL3-H_Fkltnr2ORzRNmNNd1tLfMFVNqhe-spcF3YaLin-5ZWrsSUVjUpIMCUsiGd8WMju3cDVOM9K_8yrIq964f6uBs_kjPmJhiaiXEn1mTnmCkTKg2n6zgJBlyYOtCpGCvNd98W_vHGnJcYlNTIiNMIKh705nO_x-SPC-UjcWnnSgTT4Q4uHrsCQKJQfvdyvQJv4cH_bZk2h477rwmNtyd3ijav15jWgKA" http://localhost/api/v1/senseddata
+curl -v -H "Content-Type: application/json" -X POST -d '{"gateway_record":[{"gateway_id": 0,"timestamp": "1521025377","node_record": [{"node_id": 27,"timestamp": "1521025377","ai": {"rssi": -86.0},"txt": {"mac": "90:e7:c4:xx:xx:xx", "company": "HTC Corporation"}}]}]}' -H "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJ1c2VybmFtZSI6InVubyIsImV4cCI6MTUyMTMwNDM2MCwiaWF0IjoxNTIxMzAwNzYwfQ.w9Tb9XOz56T4kQSs_xF-mzBBMp3yPOsWzLwYS_Vk9_JCupyZXx9k0RdGoT3-JXu78Yf5BtaJxz9dUY1VuQObucgD1aXkvDb9xf-Bi4oaVa6G10mMlQfdwJGTX4b2RjF5szdykhwb_YJCFew4_c9UQ5rsAuK0lceQZhaflt9IcjA7jJgu3kfQS8XmX3MAv5lzMfmXe9QL-mDTV38kRyjeB1SPerSD9jtlJxDw7YgUlMpZxnf1uAbEgLPkQx6ufx_njHNzZKJIUgLo2B0gFwQJ5HEz9fpMQIPI0pPdbAPSLO9d5DnlwneKd0q_L0hX1xf2vjcDM-Qc1_cjPo9Qw4EAh1xYuJ61Fe9xsLBCWt5-NTJAhjCverAjSwwO9oTTHHtShS49J8RL-cvEvsc1pdfehPWsaGlR8MgKkaubb0T5Lazx9PeUR5SKWwDpDXw0OvreCv7tSraK19eRyKvBfBlz2ZlXrQuYFYaiRI4_rpAzQOBzTkql5Dk6hqKPD7E95w6eWWTdHE6hqok-_FhlnWyqtZcl6t9j-hke2qNf1DDfUjc_KeYhmWdmo0Z1KqQI5s2hUCrR7z2TQUe6WQxEElzfgSyPU9ssc8QntcMomCk8m6iK7nu2hV1dXeQT2paA2VXdxvEWLGw2-8QaYvP7davdYml8Vb7lmrVXSxS5J1sa9BY" http://localhost/api/v1/senseddata
 ```
 
+Sensor data post without token
+```
+curl -v -H "Content-Type: application/json" -X POST -d '{"gateway_record":[{"gateway_id": 0,"timestamp": "1521025377","node_record": [{"node_id": 27,"timestamp": "1521025377","ai": {"rssi": -86.0},"txt": {"mac": "90:e7:c4:xx:xx:xx", "company": "HTC Corporation"}}]}]}' http://localhost/api/v1/senseddata
+```
+
+#### Gateway sensors
+
+```
+$ curl -v http://localhost/api/v1/gateway/0 -H "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJ1c2VybmFtZSI6InVubyIsImV4cCI6MTUyMTMwNDM2MCwiaWF0IjoxNTIxMzAwNzYwfQ.w9Tb9XOz56T4kQSs_xF-mzBBMp3yPOsWzLwYS_Vk9_JCupyZXx9k0RdGoT3-JXu78Yf5BtaJxz9dUY1VuQObucgD1aXkvDb9xf-Bi4oaVa6G10mMlQfdwJGTX4b2RjF5szdykhwb_YJCFew4_c9UQ5rsAuK0lceQZhaflt9IcjA7jJgu3kfQS8XmX3MAv5lzMfmXe9QL-mDTV38kRyjeB1SPerSD9jtlJxDw7YgUlMpZxnf1uAbEgLPkQx6ufx_njHNzZKJIUgLo2B0gFwQJ5HEz9fpMQIPI0pPdbAPSLO9d5DnlwneKd0q_L0hX1xf2vjcDM-Qc1_cjPo9Qw4EAh1xYuJ61Fe9xsLBCWt5-NTJAhjCverAjSwwO9oTTHHtShS49J8RL-cvEvsc1pdfehPWsaGlR8MgKkaubb0T5Lazx9PeUR5SKWwDpDXw0OvreCv7tSraK19eRyKvBfBlz2ZlXrQuYFYaiRI4_rpAzQOBzTkql5Dk6hqKPD7E95w6eWWTdHE6hqok-_FhlnWyqtZcl6t9j-hke2qNf1DDfUjc_KeYhmWdmo0Z1KqQI5s2hUCrR7z2TQUe6WQxEElzfgSyPU9ssc8QntcMomCk8m6iK7nu2hV1dXeQT2paA2VXdxvEWLGw2-8QaYvP7davdYml8Vb7lmrVXSxS5J1sa9BY"
+```
+```
 ## Shortcuts
 ```
 sudo rm -rf var/cache/* && sudo sudo rm -rf var/logs/*

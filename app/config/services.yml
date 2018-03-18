@@ -44,9 +44,10 @@ services:
 
     jwt_token_authenticator:
         class: Lockate\APIBundle\Security\JwtTokenAuthenticator
-        arguments: [ '@lexik_jwt_authentication.encoder',
-         '@doctrine.orm.entity_manager'
-         ]
+        arguments:  [ '@lexik_jwt_authentication.encoder',
+                      '@doctrine.orm.entity_manager',
+                      '@service_container'
+                    ]
 
     sensed_data_request:
         class: Lockate\APIBundle\EventListener\SensedDataRequestListener

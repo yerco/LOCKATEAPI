@@ -139,4 +139,28 @@ class ApiControllerTest extends WebTestCase
         return $headers;
     }
 
+    public function testGetGatewayDataUsingGatewayId() {
+        $gateway_id = 0;
+        $client = new Client([
+            'base_uri'  => 'http://localhost',
+            'timeout'   => 2.0,
+            'headers'   => [
+                'X-AUTH-TOKEN'  => 'schmier',
+                'headers' => $this->getAuthorizedHeaders('uno'),
+                //'Authorization' => 'Bearer '.$token
+            ],
+            // momentary
+            //'allow_redirects' => false
+        ]);
+
+        $response = $client->request(
+            'GET',
+            '/api/v1/gateway/' . $gateway_id
+            //['json' => $json_test_package],
+            //['auth' => ['uno', 'uno']]
+        );
+
+        var_dump($response);
+    }
+
 }

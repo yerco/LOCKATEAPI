@@ -11,6 +11,11 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * Class TokenAuthenticator NOT being USED anymore
+ *
+ * @package Lockate\APIBundle\Security
+ */
 class TokenAuthenticator extends AbstractGuardAuthenticator
 {
     /**
@@ -45,6 +50,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        echo "\nEn src/Lockate/APIBundle/Security/TokenAuthenticator.php getUser()\n";
 
         $username = $credentials['username'];
         $password = $credentials['password'];

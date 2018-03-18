@@ -7,3 +7,7 @@ services:
         arguments: [ '@doctrine.orm.entity_manager' ]
         public: true
 
+    retrieve_senseddata:
+        class: Lockate\APIBundle\Service\RetrieveSensedData
+        arguments: [ '@doctrine.orm.entity_manager' ]
+        public: true

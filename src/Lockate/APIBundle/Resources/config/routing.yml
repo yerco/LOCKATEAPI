@@ -20,3 +20,24 @@ lockate_api_tokens:
     path:   /api/v1/tokens
     defaults: { _controller: LockateAPIBundle:Token:newToken }
     methods:  [POST]
+
+lockate_api_gateway:
+    path:   /api/v1/gateway/{gateway_id}
+    defaults: { _controller: LockateAPIBundle:Api:gatewayId }
+    requirements:
+        gateway_id: '\d+'
+    methods: [GET]
+
+lockate_api_gateway_sensors:
+    path:   /api/v1/gatewaysensors/{gateway_id}
+    defaults: { _controller: LockateAPIBundle:Api:gatewaySensors }
+    requirements:
+        gateway_id: '\d+'
+    methods: [GET]
+
+lockate_api_sensor_info:
+    path:   /api/v1/sensorinfo/{sensor_id}
+    defaults: { _controller: LockateAPIBundle:Api:sensorDetails}
+    requirements:
+        gateway_id: '\d+'
+    methods: [GET]

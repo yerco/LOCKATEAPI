@@ -13,16 +13,23 @@ use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
 class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $jwtEncoder;
     private $em;
+    private $container;
 
-    public function __construct(JWTEncoderInterface $jwtEncoder, EntityManagerInterface $em)
+    public function __construct(
+        JWTEncoderInterface $jwtEncoder,
+        EntityManagerInterface $em,
+        Container $container
+    )
     {
         $this->jwtEncoder = $jwtEncoder;
         $this->em = $em;
+        $this->container= $container;
     }
 
     public function getCredentials(Request $request) {
@@ -32,10 +39,26 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
             'Authorization'
         );
         $token = $extractor->extract($request);
-        if (!$token) {
-            return;
+
+        $user = $this->em
+            ->getRepository('LockateAPIBundle:User')
+            ->findOneBy(['username' => $request->getUser()]);
+
+        // Important: Only to get tokens route and password
+        if (isset($user) && $request->get('_route') === 'lockate_api_tokens') {;
+            $isValid = $this->container->get('security.password_encoder')
+                ->isPasswordValid($user, $request->getPassword());
+
+            if ($isValid) {
+                return;
+            }
         }
 
+        // this sends you out
+        if (!$token) {
+            return true;
+            //return null;
+        }
         return $token;
     }
 
@@ -81,7 +104,6 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
         TokenInterface $token,
         $providerKey
     ) {
-        //echo "\n\n\n\n\n\n\nonAuthenticationSuccess\n\n\n";
         return null;
     }
 
@@ -94,7 +116,6 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
         Request $request,
         AuthenticationException $authException = null
     ) {
-        //echo "\n\n\n\n\n\n\nSTART\n\n\n";
         return new JsonResponse([
             'error' => 'auth required'
         ], 401);
