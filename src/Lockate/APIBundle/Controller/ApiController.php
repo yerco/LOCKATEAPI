@@ -50,7 +50,7 @@ class ApiController extends Controller
 
     public function sensorDetailsAction($sensor_id) {
         $retrieve = $this->get('retrieve_senseddata');
-        $sensor_info = $retrieve->retrieveGatewaySensors($sensor_id);
+        $sensor_info = $retrieve->retrieveSensor($sensor_id);
         return new JsonResponse(($sensor_info));
     }
 }
