@@ -22,22 +22,22 @@ lockate_api_tokens:
     methods:  [POST]
 
 lockate_api_gateway:
-    path:   /api/v1/gateway/{gateway_id}
-    defaults: { _controller: LockateAPIBundle:Api:gatewayId }
+    path:   /api/v1/gateway/{gateway_id}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:gatewayId, limit: null }
     requirements:
         gateway_id: '\d+'
     methods: [GET]
 
 lockate_api_gateway_sensors:
-    path:   /api/v1/gatewaysensors/{gateway_id}
-    defaults: { _controller: LockateAPIBundle:Api:gatewaySensors }
+    path:   /api/v1/gatewaysensors/{gateway_id}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:gatewaySensors, limit: null }
     requirements:
         gateway_id: '\d+'
     methods: [GET]
 
 lockate_api_sensor_info:
-    path:   /api/v1/sensorinfo/{sensor_id}
-    defaults: { _controller: LockateAPIBundle:Api:sensorDetails}
+    path:   /api/v1/sensorinfo/{sensor_id}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:sensorDetails, limit: null }
     requirements:
         gateway_id: '\d+'
     methods: [GET]

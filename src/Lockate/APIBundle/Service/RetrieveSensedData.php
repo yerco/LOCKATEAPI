@@ -19,12 +19,16 @@ class RetrieveSensedData
      *
      * @return array - key id (int) -> timestamp (DateTime)
      */
-    public function retrieveGatewayRecords($gateway_id) {
+    public function retrieveGatewayRecords($gateway_id, $limit) {
 
         $gateway_info = [];
         $gateway_records = $this->entity_manager
             ->getRepository(Gateway::class)
-            ->findBy(array('gateway_id' => $gateway_id));
+            ->findBy(
+                array('gateway_id' => $gateway_id),
+                array('id'      => 'DESC'),
+                $limit
+            );
 
         for ($i = 0 ; $i < count($gateway_records); $i++){
             $gateway_info[$gateway_records[$i]->getId()] =
@@ -40,6 +44,8 @@ class RetrieveSensedData
     }
 
     /**
+     * Note: this function uses the same class function `retrieveGatewayRecords`
+     *
      * @param $gateway_id - int
      *
      * @return array of arrays
@@ -49,9 +55,9 @@ class RetrieveSensedData
      *               [3] - [7]  array variable length
      *
      */
-    public function retrieveGatewaySensors($gateway_id) {
+    public function retrieveGatewaySensors($gateway_id, $limit) {
         $sensor_records = [];
-        $gateway_records = self::retrieveGatewayRecords($gateway_id);
+        $gateway_records = self::retrieveGatewayRecords($gateway_id, $limit);
 
         if ($gateway_records) {
             $sensorsEntity = $this->entity_manager
@@ -60,7 +66,7 @@ class RetrieveSensedData
                 $result = $sensorsEntity->findBy(array('gateway' =>
                     $gateway_id));
                 array_push($sensor_records, array(
-                        "record_id"                => $result[0]->getId(),
+                        "record_id"         => $result[0]->getId(),
                         "node_id"           => $result[0]->getNodeId(),
                         "node_timestamp"    => $result[0]->getNodeTimestamp(),
                         "analog_input"      => $result[0]->getAnalogInput(),
@@ -71,6 +77,7 @@ class RetrieveSensedData
                     )
                 );
             }
+            echo "\nla cuenta: " . count($sensor_records);
             return $sensor_records;
         }
         else {
@@ -88,11 +95,15 @@ class RetrieveSensedData
      *               [3]        DateTime object
      *               [3] - [7]  array variable length
      */
-    public function retrieveSensor($node_id) {
+    public function retrieveSensor($node_id, $limit = null) {
         $sensor_records = array();
         $node_records = $this->entity_manager
             ->getRepository(Sensor::class)
-            ->findBy(array('node_id' => $node_id));;
+            ->findBy(
+                array('node_id' => $node_id),
+                array('id'      => 'DESC'),
+                $limit
+            );
         if ($node_records) {
             for ($i = 0; $i < count($node_records); $i++) {
                 $sensor_records[$i] = array(
