@@ -32,6 +32,16 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
         $this->container= $container;
     }
 
+    public function supports(Request $request)
+    {
+        if ($request->get('_route') == 'lockate_site_homepage') {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
     public function getCredentials(Request $request) {
 
         $extractor = new AuthorizationHeaderTokenExtractor(
@@ -94,7 +104,7 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
         Request $request,
         AuthenticationException $exception
     ) {
-        $data = array('message'   => 'Check your credentials and/or token');
+        $data = array('message'   => 'Check your auth credentials or token');
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
