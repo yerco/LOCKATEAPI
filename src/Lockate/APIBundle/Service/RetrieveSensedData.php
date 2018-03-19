@@ -60,14 +60,14 @@ class RetrieveSensedData
                 $result = $sensorsEntity->findBy(array('gateway' =>
                     $gateway_id));
                 array_push($sensor_records, array(
-                        $result[0]->getId(),
-                        $result[0]->getNodeId(),
-                        $result[0]->getNodeTimestamp(),
-                        $result[0]->getAnalogInput(),
-                        $result[0]->getAnalogOutput(),
-                        $result[0]->getDigitalInput(),
-                        $result[0]->getDigitalOutput(),
-                        $result[0]->getTxt()
+                        "record_id"                => $result[0]->getId(),
+                        "node_id"           => $result[0]->getNodeId(),
+                        "node_timestamp"    => $result[0]->getNodeTimestamp(),
+                        "analog_input"      => $result[0]->getAnalogInput(),
+                        "analog_output"     => $result[0]->getAnalogOutput(),
+                        "digital_input"     => $result[0]->getDigitalInput(),
+                        "digital_output"    => $result[0]->getDigitalOutput(),
+                        "txt"               => $result[0]->getTxt()
                     )
                 );
             }
@@ -92,18 +92,21 @@ class RetrieveSensedData
         $sensor_records = array();
         $node_records = $this->entity_manager
             ->getRepository(Sensor::class)
-            ->findBy(array('node_id' => $node_id));
+            ->findBy(array('node_id' => $node_id));;
         if ($node_records) {
             for ($i = 0; $i < count($node_records); $i++) {
                 $sensor_records[$i] = array(
-                    $node_records[$i]->getId(),
-                    $node_records[$i]->getNodeId(),
-                    $node_records[$i]->getNodeTimestamp(),
-                    $node_records[$i]->getAnalogInput(),
-                    $node_records[$i]->getAnalogOutput(),
-                    $node_records[$i]->getDigitalInput(),
-                    $node_records[$i]->getDigitalOutput(),
-                    $node_records[$i]->getTxt()
+                    "record_id"         => $node_records[$i]->getId(),
+                    "gateway_id"        => $node_records[$i]->getGateway()
+                        ->getGatewayId(),
+                    "node_id"           => $node_records[$i]->getNodeId(),
+                    "node_timestamp"    =>
+                        $node_records[$i]->getNodeTimestamp(),
+                    "analog_input"      => $node_records[$i]->getAnalogInput(),
+                    "analog_output"     => $node_records[$i]->getAnalogOutput(),
+                    "digital_input"     => $node_records[$i]->getDigitalInput(),
+                    "digital_output"    => $node_records[$i]->getDigitalOutput(),
+                    "txt"               => $node_records[$i]->getTxt()
                 );
             }
             return $sensor_records;
