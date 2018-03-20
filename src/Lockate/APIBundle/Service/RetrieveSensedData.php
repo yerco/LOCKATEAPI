@@ -77,7 +77,6 @@ class RetrieveSensedData
                     )
                 );
             }
-            echo "\nla cuenta: " . count($sensor_records);
             return $sensor_records;
         }
         else {
