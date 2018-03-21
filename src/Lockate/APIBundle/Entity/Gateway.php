@@ -19,9 +19,9 @@ class Gateway
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Sensor", mappedBy="gateway")
+     * @ORM\OneToMany(targetEntity="Node", mappedBy="gateway")
      */
-    private $sensors;
+    private $nodes;
 
     /**
      * @ORM\Column(type="integer")
@@ -33,8 +33,14 @@ class Gateway
      */
     private $timestamp;
 
+    /**
+     *
+     * @ORM\Column(type="json_array")
+     */
+    private $gateway_description;
+
     public function __construct() {
-        $this->sensors = new ArrayCollection();
+        $this->nodes = new ArrayCollection();
     }
 
     /**
@@ -60,19 +66,19 @@ class Gateway
     /**
      * @return mixed
      */
-    public function getSensors()
+    public function getNodes()
     {
-        return $this->sensors;
+        return $this->nodes;
     }
 
     /**
-     * @param mixed $sensors
+     * @param mixed $nodes
      *
      * @return Gateway
      */
-    public function setSensors($sensors)
+    public function setNodes($nodes)
     {
-        $this->sensors = $sensors;
+        $this->nodes = $nodes;
 
         return $this;
     }
@@ -116,5 +122,23 @@ class Gateway
 
         return $this;
     }
+
+
+    /**
+     * @return mixed
+     */
+    public function getGatewayDescription()
+    {
+        return $this->gateway_description;
+    }
+
+    /**
+     * @param mixed $gateway_description
+     */
+    public function setGatewayDescription($gateway_description)
+    {
+        $this->gateway_description = $gateway_description;
+    }
+
 
 }

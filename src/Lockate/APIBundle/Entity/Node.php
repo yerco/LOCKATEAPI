@@ -9,9 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 // The real `gateway_id` can be found at lockate_gateway table itself.
 /**
  * @ORM\Entity
- * @ORM\Table(name="lockate_sensors")
+ * @ORM\Table(name="lockate_nodes")
  */
-class Sensor
+class Node
 {
     /**
      * @ORM\Id
@@ -21,7 +21,7 @@ class Sensor
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Gateway", inversedBy="sensors")
+     * @ORM\ManyToOne(targetEntity="Gateway", inversedBy="nodes")
      * @ORM\JoinColumn(name="gateway_id", referencedColumnName="id")
      */
     private $gateway;
@@ -79,7 +79,7 @@ class Sensor
     /**
      * @param mixed $id
      *
-     * @return Sensor
+     * @return Node
      */
     public function setId($id)
     {
@@ -99,7 +99,7 @@ class Sensor
     /**
      * @param mixed $gateway
      *
-     * @return Sensor
+     * @return Node
      */
     public function setGateway($gateway)
     {
@@ -119,7 +119,7 @@ class Sensor
     /**
      * @param mixed $node_id
      *
-     * @return Sensor
+     * @return Node
      */
     public function setNodeId($node_id)
     {
@@ -139,7 +139,7 @@ class Sensor
     /**
      * @param mixed $node_timestamp
      *
-     * @return Sensor
+     * @return Node
      */
     public function setNodeTimestamp($node_timestamp)
     {
@@ -159,7 +159,7 @@ class Sensor
     /**
      * @param mixed $analog_input
      *
-     * @return Sensor
+     * @return Node
      */
     public function setAnalogInput($analog_input)
     {
@@ -179,7 +179,7 @@ class Sensor
     /**
      * @param mixed $analog_output
      *
-     * @return Sensor
+     * @return Node
      */
     public function setAnalogOutput($analog_output)
     {
@@ -199,7 +199,7 @@ class Sensor
     /**
      * @param mixed $digital_output
      *
-     * @return Sensor
+     * @return Node
      */
     public function setDigitalOutput($digital_output)
     {
@@ -219,7 +219,7 @@ class Sensor
     /**
      * @param mixed $digital_input
      *
-     * @return Sensor
+     * @return Node
      */
     public function setDigitalInput($digital_input)
     {

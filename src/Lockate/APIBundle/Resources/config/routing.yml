@@ -29,15 +29,15 @@ lockate_api_gateway:
     methods: [GET]
 
 lockate_api_gateway_sensors:
-    path:   /api/v1/gatewaysensors/{gateway_id}/{limit}
-    defaults: { _controller: LockateAPIBundle:Api:gatewaySensors, limit: null }
+    path:   /api/v1/gatewaynodes/{gateway_id}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:gatewayNodes, limit: null }
     requirements:
         gateway_id: '\d+'
     methods: [GET]
 
 lockate_api_sensor_info:
-    path:   /api/v1/sensorinfo/{sensor_id}/{limit}
-    defaults: { _controller: LockateAPIBundle:Api:sensorDetails, limit: null }
+    path:   /api/v1/nodeinfo/{node_id}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:nodeDetails, limit: null }
     requirements:
         gateway_id: '\d+'
     methods: [GET]

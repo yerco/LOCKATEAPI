@@ -15,17 +15,17 @@ class RetrieveSensedDataTest extends KernelTestCase
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
         $response = $retriever->retrieveGatewayRecords($gateway_id, $limit);
-        var_dump($response);
+        // var_dump($response);
         $this->assertNotEmpty($response);
     }
 
     public function testRetrieveGatewaySensors() {
         $gateway_id = 0;
-        $limit = 1;
+        $limit = null;
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
-        $response = $retriever->retrieveGatewaySensors($gateway_id, $limit);
+        $response = $retriever->retrieveGatewayNodes($gateway_id, $limit);
         //var_dump($response);
         $this->assertNotEmpty($response);
     }
@@ -36,7 +36,7 @@ class RetrieveSensedDataTest extends KernelTestCase
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
-        $response = $retriever->retrieveSensor($sensor_id, $limit);
+        $response = $retriever->retrieveNode($sensor_id, $limit);
         $this->assertNotEmpty($response);
     }
 }

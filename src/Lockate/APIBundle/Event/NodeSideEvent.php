@@ -4,9 +4,9 @@ namespace Lockate\APIBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class SensorSideEvent extends Event
+class NodeSideEvent extends Event
 {
-    const SENSEDDATAREQUEST = 'senseddata.request';
+    const CAPTUREDDATAREQUEST = 'captureddata.request';
 
     protected $json_sent;
 

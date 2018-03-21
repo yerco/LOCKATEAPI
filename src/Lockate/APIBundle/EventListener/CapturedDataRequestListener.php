@@ -2,14 +2,14 @@
 
 namespace Lockate\APIBundle\EventListener;
 
-use Lockate\APIBundle\Event\SensorSideEvent;
+use Lockate\APIBundle\Event\NodeSideEvent;
 use Psr\Log\LoggerInterface;
 use \Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class SensedDataRequestListener implements EventSubscriberInterface
+class CapturedDataRequestListener implements EventSubscriberInterface
 {
     /**
      * @var LoggerInterface
@@ -39,7 +39,7 @@ class SensedDataRequestListener implements EventSubscriberInterface
 //        });
     }
 
-    public function onSensedDataRequest(SensorSideEvent $event){
+    public function onCapturedDataRequest(NodeSideEvent $event){
         // Check monolog configuration
         $this->logger->debug("Request at: " . time());
         $event->stopPropagation();
@@ -50,7 +50,7 @@ class SensedDataRequestListener implements EventSubscriberInterface
         return array(
             //'kernel.request' => 'onKernelRequest'
             //KernelEvents::REQUEST => 'onKernelRequest'
-            SensorSideEvent::SENSEDDATAREQUEST => 'onSensedDataRequest'
+            NodeSideEvent::CAPTUREDDATAREQUEST => 'onCapturedDataRequest'
         );
     }
 }

@@ -4,7 +4,7 @@ namespace Lockate\APIBundle\Service;
 
 use Doctrine\ORM\EntityManager;
 use Lockate\APIBundle\Entity\Gateway;
-use Lockate\APIBundle\Entity\Sensor;
+use Lockate\APIBundle\Entity\Node;
 
 class RetrieveSensedData
 {
@@ -31,8 +31,10 @@ class RetrieveSensedData
             );
 
         for ($i = 0 ; $i < count($gateway_records); $i++){
-            $gateway_info[$gateway_records[$i]->getId()] =
-                $gateway_records[$i]->getTimestamp();
+            $gateway_info[$gateway_records[$i]->getId()] = array(
+                $gateway_records[$i]->getTimestamp(),
+                $gateway_records[$i]->getGatewayDescription()
+            );
         }
 
         if (!$gateway_records) {
@@ -55,27 +57,29 @@ class RetrieveSensedData
      *               [3] - [7]  array variable length
      *
      */
-    public function retrieveGatewaySensors($gateway_id, $limit) {
+    public function retrieveGatewayNodes($gateway_id, $limit) {
         $sensor_records = [];
         $gateway_records = self::retrieveGatewayRecords($gateway_id, $limit);
 
         if ($gateway_records) {
             $sensorsEntity = $this->entity_manager
-                ->getRepository(Sensor::class);
+                ->getRepository(Node::class);
             foreach ($gateway_records as $gateway_id => $timestamp) {
                 $result = $sensorsEntity->findBy(array('gateway' =>
                     $gateway_id));
-                array_push($sensor_records, array(
-                        "record_id"         => $result[0]->getId(),
-                        "node_id"           => $result[0]->getNodeId(),
-                        "node_timestamp"    => $result[0]->getNodeTimestamp(),
-                        "analog_input"      => $result[0]->getAnalogInput(),
-                        "analog_output"     => $result[0]->getAnalogOutput(),
-                        "digital_input"     => $result[0]->getDigitalInput(),
-                        "digital_output"    => $result[0]->getDigitalOutput(),
-                        "txt"               => $result[0]->getTxt()
-                    )
-                );
+                if (isset($result[0])) {
+                    array_push($sensor_records, array(
+                            "record_id" => $result[0]->getId(),
+                            "node_id" => $result[0]->getNodeId(),
+                            "node_timestamp" => $result[0]->getNodeTimestamp(),
+                            "analog_input" => $result[0]->getAnalogInput(),
+                            "analog_output" => $result[0]->getAnalogOutput(),
+                            "digital_input" => $result[0]->getDigitalInput(),
+                            "digital_output" => $result[0]->getDigitalOutput(),
+                            "txt" => $result[0]->getTxt()
+                        )
+                    );
+                }
             }
             return $sensor_records;
         }
@@ -94,10 +98,10 @@ class RetrieveSensedData
      *               [3]        DateTime object
      *               [3] - [7]  array variable length
      */
-    public function retrieveSensor($node_id, $limit = null) {
+    public function retrieveNode($node_id, $limit = null) {
         $sensor_records = array();
         $node_records = $this->entity_manager
-            ->getRepository(Sensor::class)
+            ->getRepository(Node::class)
             ->findBy(
                 array('node_id' => $node_id),
                 array('id'      => 'DESC'),

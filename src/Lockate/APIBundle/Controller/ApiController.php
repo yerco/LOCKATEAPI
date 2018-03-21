@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Lockate\APIBundle\Event\SensorSideEvent;
+use Lockate\APIBundle\Event\NodeSideEvent;
 
 class ApiController extends Controller
 {
@@ -29,10 +29,10 @@ class ApiController extends Controller
         $persist = $this->get('persist_senseddata');
         $persistence_message = $persist->persistSensedData($request->getContent());
         $event_dispatcher = new EventDispatcher();
-        $event = new SensorSideEvent($request->getContent());
-        $senseddata_listener = $this->container->get('sensed_data_request');
+        $event = new NodeSideEvent($request->getContent());
+        $senseddata_listener = $this->container->get('captured_data_request');
         $event_dispatcher->addSubscriber($senseddata_listener);
-        $event_dispatcher->dispatch(SensorSideEvent::SENSEDDATAREQUEST, $event);
+        $event_dispatcher->dispatch(NodeSideEvent::CAPTUREDDATAREQUEST, $event);
         return new JsonResponse($persistence_message);
     }
 
@@ -43,17 +43,17 @@ class ApiController extends Controller
         return new JsonResponse(array_merge($gateway_packet, $gateway));
     }
 
-    public function gatewaySensorsAction($gateway_id, $limit) {
+    public function gatewayNodesAction($gateway_id, $limit) {
         $retrieve = $this->get('retrieve_senseddata');
-        $gateway_sensors = $retrieve->retrieveGatewaySensors($gateway_id,
+        $gateway_sensors = $retrieve->retrieveGatewayNodes($gateway_id,
             $limit);
         $gateway_packet = array("gateway_id" => $gateway_id);
         return new JsonResponse(array_merge($gateway_packet, $gateway_sensors));
     }
 
-    public function sensorDetailsAction($sensor_id, $limit) {
+    public function nodeDetailsAction($node_id, $limit) {
         $retrieve = $this->get('retrieve_senseddata');
-        $sensor_info = $retrieve->retrieveSensor($sensor_id, $limit);
+        $sensor_info = $retrieve->retrieveNode($node_id, $limit);
         return new JsonResponse(($sensor_info));
     }
 }

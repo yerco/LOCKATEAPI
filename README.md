@@ -15,8 +15,14 @@
     ServerTokens Prod
     ```
     - Last change needs server restart
-        
-### Testing
+
+## Database
+Update (due to changes)
+```
+$ php bin/console doctrine:schema:update --force
+```
+   
+## Testing
 
 After downloading **phpunit-6.5.phar**
 ```
@@ -40,7 +46,7 @@ $ ./phpunit-6.5.phar --filter  testRetrieveSensor
 ```
 
 
-### Examples using `curl`
+## Request examples using `curl`
 ```
 $ curl -H "Content-Type: application/json" -X POST \
 -d '{"node_id": "xyz", "timestamp": "xyz", "var1": "bloodyroots"}' \ 
@@ -74,7 +80,8 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"gateway_record":[{"gat
 $ curl -v http://localhost/api/v1/gateway/0 -H "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJ1c2VybmFtZSI6InVubyIsImV4cCI6MTUyMTMwNDM2MCwiaWF0IjoxNTIxMzAwNzYwfQ.w9Tb9XOz56T4kQSs_xF-mzBBMp3yPOsWzLwYS_Vk9_JCupyZXx9k0RdGoT3-JXu78Yf5BtaJxz9dUY1VuQObucgD1aXkvDb9xf-Bi4oaVa6G10mMlQfdwJGTX4b2RjF5szdykhwb_YJCFew4_c9UQ5rsAuK0lceQZhaflt9IcjA7jJgu3kfQS8XmX3MAv5lzMfmXe9QL-mDTV38kRyjeB1SPerSD9jtlJxDw7YgUlMpZxnf1uAbEgLPkQx6ufx_njHNzZKJIUgLo2B0gFwQJ5HEz9fpMQIPI0pPdbAPSLO9d5DnlwneKd0q_L0hX1xf2vjcDM-Qc1_cjPo9Qw4EAh1xYuJ61Fe9xsLBCWt5-NTJAhjCverAjSwwO9oTTHHtShS49J8RL-cvEvsc1pdfehPWsaGlR8MgKkaubb0T5Lazx9PeUR5SKWwDpDXw0OvreCv7tSraK19eRyKvBfBlz2ZlXrQuYFYaiRI4_rpAzQOBzTkql5Dk6hqKPD7E95w6eWWTdHE6hqok-_FhlnWyqtZcl6t9j-hke2qNf1DDfUjc_KeYhmWdmo0Z1KqQI5s2hUCrR7z2TQUe6WQxEElzfgSyPU9ssc8QntcMomCk8m6iK7nu2hV1dXeQT2paA2VXdxvEWLGw2-8QaYvP7davdYml8Vb7lmrVXSxS5J1sa9BY"
 ```
 ```
-## Shortcuts
+
+## Development Shortcuts
 ```
 sudo rm -rf var/cache/* && sudo sudo rm -rf var/logs/*
 ```

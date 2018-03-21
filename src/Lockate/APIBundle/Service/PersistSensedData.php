@@ -2,7 +2,7 @@
 namespace Lockate\APIBundle\Service;
 
 use Lockate\APIBundle\Entity\Gateway;
-use Lockate\APIBundle\Entity\Sensor;
+use Lockate\APIBundle\Entity\Node;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,11 +33,13 @@ class PersistSensedData
 
         $gateway_id = $record->gateway_id;
         $timestamp = $date->setTimestamp((int)$record->timestamp);
+        $gateway_description = $record->gateway_description;
 
         try {
             $gateway = new Gateway();
             $gateway->setGatewayId($gateway_id);
             $gateway->setTimestamp($timestamp);
+            $gateway->setGatewayDescription($gateway_description);
             $this->entity_manager->persist($gateway);
         }
         catch (Exception $e) {
@@ -49,7 +51,7 @@ class PersistSensedData
         }
         foreach ($node_record as $sensor_record) {
 
-            $sensor = new Sensor();
+            $sensor = new Node();
 
             $sensor->setNodeId($sensor_record->node_id);
             $date = new \DateTime();

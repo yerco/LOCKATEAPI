@@ -49,10 +49,10 @@ services:
                       '@service_container'
                     ]
 
-    sensed_data_request:
-        class: Lockate\APIBundle\EventListener\SensedDataRequestListener
+    captured_data_request:
+        class: Lockate\APIBundle\EventListener\CapturedDataRequestListener
         arguments: [ '@logger' ]
         tags:
-          - { name: senseddata.request }
+          - { name: captureddata.request }
           #- { name: kernel.event_subscriber }
         public: true
