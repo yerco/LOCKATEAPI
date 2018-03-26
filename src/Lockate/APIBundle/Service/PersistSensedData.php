@@ -4,9 +4,11 @@ namespace Lockate\APIBundle\Service;
 use Lockate\APIBundle\Entity\Gateway;
 use Lockate\APIBundle\Entity\Node;
 use Doctrine\ORM\EntityManager;
+use Lockate\APIBundle\Entity\Sensor;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\DBAL\Exception\DriverException;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class PersistSensedData
 {
@@ -21,92 +23,139 @@ class PersistSensedData
      *
      * @return array
      */
-    public function persistSensedData($data) {
+    public function persistSensedData($data)
+    {
 
-        $date = new \DateTime();
+        $date_gateway = new \DateTime();
 
         $complete_record = json_decode($data);
         $record = $complete_record->gateway_record[0];
 
         // node_record could contain nested records
-        $node_record = $record->node_record;
+        $node_records = $record->node_record;
 
-        $gateway_id = $record->gateway_id;
-        $timestamp = $date->setTimestamp((int)$record->timestamp);
-        $gateway_description = $record->gateway_description;
+        if (isset($record->gateway_id)) {
+            $gateway_id = $record->gateway_id;
+            if (isset($record->gateway_summary)) {
+                $gateway_summary = $record->gateway_summary;
+            }
+            else {
+                $gateway_summary = json_decode('{}');
+            }
+            if (isset($record->timestamp)) {
+                $date_gateway->setTimestamp((int)$record->timestamp);
+            }
+            else {
+                $date_gateway->setTimestamp(0);
+            }
+            try {
+                $gateway = new Gateway();
+                $gateway->setGatewayId($gateway_id);
+                $gateway->setGatewaySummary($gateway_summary);
+                $gateway->setGatewayTimestamp($date_gateway);
+                $this->entity_manager->persist($gateway);
+            }
+            catch (Exception $e) {
+                return array(
+                    "message"       => "Error storing information",
+                    "please send this msg to the developer" => $e->getMessage()
+                );
+            }
 
-        try {
-            $gateway = new Gateway();
-            $gateway->setGatewayId($gateway_id);
-            $gateway->setTimestamp($timestamp);
-            $gateway->setGatewayDescription($gateway_description);
-            $this->entity_manager->persist($gateway);
-        }
-        catch (Exception $e) {
-            //var_dump($e);
+            foreach ($node_records as $node_record) {
+                $date_node = new \DateTime();
+                if (isset($node_record->node_id)) {
+                    if (isset($node_record->node_summary)) {
+                        $node_summary = $node_record->node_summary;
+                    }
+                    else {
+                        $node_summary = json_decode('{}');
+                    }
+                    if (isset($node_record->timestamp)) {
+                        $node_timestamp = $date_node->setTimestamp((int)$node_record->timestamp);
+                    }
+                    else {
+                        $node_timestamp = $date_node->setTimestamp(0);
+                    }
+                    try{
+                        $node = new Node();
+                        $node->setGateway($gateway->getId());
+                        $node->setNodeId($node_record->node_id);
+                        $node->setNodeSummary($node_summary);
+                        $node->setNodeTimestamp($node_timestamp);
+                        //relates node to gateway
+                        $node->setGateway($gateway);
+                        $this->entity_manager->persist($node);
+
+                        foreach ($node_record->sensor_record as $sensor_record) {
+
+                            if (isset($sensor_record->sensor_id)) {
+                                if (isset($sensor_record->sensor_description)) {
+                                    $sensor_description = $sensor_record->sensor_description;
+                                }
+                                else {
+                                    $sensor_description = json_decode('{}');
+                                }
+                                if (isset($sensor_record->input)) {
+                                    $sensor_input =  $sensor_record->input;
+                                }
+                                else {
+                                    $sensor_input = json_decode('{}');
+                                }
+                                if (isset($sensor_record->output)) {
+                                    $sensor_output = $sensor_record->output;
+                                }
+                                else {
+                                    $sensor_output = json_decode('{}');
+                                }
+                                try {
+                                    $sensor = new Sensor();
+                                    $sensor->setSensorId($sensor_record->sensor_id);
+                                    $sensor->setSensorDescription($sensor_description);
+                                    $sensor->setInput($sensor_input);
+                                    $sensor->setOutput($sensor_output);
+                                    //relates sensor to node
+                                    $sensor->setNode($node);
+                                    $this->entity_manager->persist($sensor);
+                                }
+                                catch (Exception $e) {
+                                    return array(
+                                        "message"       => "Error storing information",
+                                        "please send this msg to the developer" => $e->getMessage()
+                                    );
+                                }
+                            }
+                        }
+
+                    }
+                    catch (Exception $e) {
+                        return array(
+                            "message"       => "Error storing information",
+                            "please send this msg to the developer" => $e->getMessage()
+                        );
+                    }
+                }
+            }
+            try {
+                $this->entity_manager->flush();
+            }
+            catch(DriverException $e) {
+                return array(
+                    "message"   => $e->getMessage()
+                );
+            }
+
+            $time = time();
+            $check = $time + date("Z", $time);
+
             return array(
-                "message"       => "Error storing information",
-                "please send this msg to the developer" => $e->getMessage()
+                "message" => "information stored",
+                "storage_time" => strftime("%B %d, %Y @ %H:%M:%S UTC", $check)
+            );
+        } else {
+            return array(
+                "message"   => "gateway_id not set"
             );
         }
-        foreach ($node_record as $sensor_record) {
-
-            $sensor = new Node();
-
-            $sensor->setNodeId($sensor_record->node_id);
-            $date = new \DateTime();
-            $sensor->setNodeTimestamp($date->setTimestamp((int)$sensor_record->timestamp));
-
-            if (isset($sensor_record->ai)) {
-                $sensor->setAnalogInput($sensor_record->ai);
-            }
-            else {
-                $sensor->setAnalogInput(json_decode('{}'));
-            }
-            if (isset($sensor_record->ao)) {
-                $sensor->setAnalogOutput($sensor_record->ao);
-            }
-            else {
-                $sensor->setAnalogOutput(json_decode('{}'));
-            }
-            if (isset($sensor_record->di)) {
-                $sensor->setDigitalInput($sensor_record->di);
-            }
-            else {
-                $sensor->setDigitalInput(json_decode('{}'));
-            }
-            if (isset($sensor_record->do)) {
-                $sensor->setDigitalOutput($sensor_record->do);
-            }
-            else {
-                $sensor->setDigitalOutput(json_decode('{}'));
-            }
-            if (isset($sensor_record->txt)) {
-                $sensor->setTxt($sensor_record->txt);
-            }
-            else {
-                $sensor->setTxt(json_decode('{}'));
-            }
-            //relates sensor to gateway
-            $sensor->setGateway($gateway);
-
-            $this->entity_manager->persist($sensor);
-        }
-
-        try {
-            $this->entity_manager->flush();
-        }
-        catch(DriverException $e) {
-            return array(
-                "message"   => "check json package (hint timestamp length)"
-            );
-        }
-        $time = time();
-        $check = $time+date("Z",$time);
-
-        return array(
-            "message"       => "information stored",
-            "storage_time"  => strftime("%B %d, %Y @ %H:%M:%S UTC", $check)
-        );
     }
 }

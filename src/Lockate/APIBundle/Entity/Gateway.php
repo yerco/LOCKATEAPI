@@ -29,15 +29,15 @@ class Gateway
     private $gateway_id;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $timestamp;
-
-    /**
      *
      * @ORM\Column(type="json_array")
      */
-    private $gateway_description;
+    private $gateway_summary;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $gateway_timestamp;
 
     public function __construct() {
         $this->nodes = new ArrayCollection();
@@ -53,14 +53,10 @@ class Gateway
 
     /**
      * @param mixed $id
-     *
-     * @return Gateway
      */
     public function setId($id)
     {
         $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -73,14 +69,10 @@ class Gateway
 
     /**
      * @param mixed $nodes
-     *
-     * @return Gateway
      */
     public function setNodes($nodes)
     {
         $this->nodes = $nodes;
-
-        return $this;
     }
 
     /**
@@ -93,52 +85,41 @@ class Gateway
 
     /**
      * @param mixed $gateway_id
-     *
-     * @return Gateway
      */
     public function setGatewayId($gateway_id)
     {
         $this->gateway_id = $gateway_id;
-
-        return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getTimestamp()
+    public function getGatewaySummary()
     {
-        return $this->timestamp;
+        return $this->gateway_summary;
     }
 
     /**
-     * @param mixed $timestamp
-     *
-     * @return Gateway
+     * @param mixed $gateway_summary
      */
-    public function setTimestamp($timestamp)
+    public function setGatewaySummary($gateway_summary)
     {
-        $this->timestamp = $timestamp;
-
-        return $this;
+        $this->gateway_summary = $gateway_summary;
     }
-
 
     /**
      * @return mixed
      */
-    public function getGatewayDescription()
+    public function getGatewayTimestamp()
     {
-        return $this->gateway_description;
+        return $this->gateway_timestamp;
     }
 
     /**
-     * @param mixed $gateway_description
+     * @param mixed $gateway_timestamp
      */
-    public function setGatewayDescription($gateway_description)
+    public function setGatewayTimestamp($gateway_timestamp)
     {
-        $this->gateway_description = $gateway_description;
+        $this->gateway_timestamp = $gateway_timestamp;
     }
-
-
 }
