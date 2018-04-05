@@ -19,24 +19,28 @@ class RetrieveSensedDataTest extends KernelTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testRetrieveGatewaySensors() {
-        $gateway_id = 0;
+    public function testRetrieveGatewayNodes() {
+        $gateway_id = 12;
+        $node_id = 27;
         $limit = null;
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
-        $response = $retriever->retrieveGatewayNodes($gateway_id, $limit);
-        //var_dump($response);
+        $response = $retriever->retrieveGatewayNodes($gateway_id, $node_id, $limit);
+        var_dump($response);
         $this->assertNotEmpty($response);
     }
 
-    public function testRetrieveSensor() {
-        $sensor_id = 27; // node_id
+    public function testRetrieveGatewayNodeSensors() {
+        $gateway_id = 12;
+        $node_id = 27;
+        $sensor_id = 5;
         $limit = 1;
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
-        $response = $retriever->retrieveNode($sensor_id, $limit);
+        $response = $retriever->retrieveNode($gateway_id, $node_id, $sensor_id, $limit);
+
         $this->assertNotEmpty($response);
     }
 }

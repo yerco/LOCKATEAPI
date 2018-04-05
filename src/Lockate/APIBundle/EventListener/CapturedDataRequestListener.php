@@ -18,7 +18,7 @@ class CapturedDataRequestListener implements EventSubscriberInterface
      */
     private $logger;
     /* dev, prod settings */
-    const FORWARD_URI_DEV = 'http://localhost';
+    const FORWARD_URI_DEV = 'http://localhost/app_dev.php';
     const FORWARD_URI_PROD = 'http://lockate.hopto.org';
 
     public function __construct(LoggerInterface $logger) {

@@ -9,8 +9,6 @@ use GuzzleHttp\Exception\ClientException;
 class ApiControllerTest extends WebTestCase
 {
     protected $json_test_package_A;
-    protected $json_test_package_B;
-    protected $json_test_package_C;
 
     protected function setUp() {
 
@@ -60,6 +58,7 @@ class ApiControllerTest extends WebTestCase
                 ]
             }
             ';
+
         // just cleaning this stuff above to make a proper json
         $temp = str_replace(array("\n", "\r"), '', $json_test_package);
         $temp = preg_replace('/\s+/', '', $temp);
@@ -73,27 +72,24 @@ class ApiControllerTest extends WebTestCase
         $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
             ->encode(['username' => 'uno']);
 
-        $json_test_package = json_encode($this->json_test_package_A);
         $client = new Client([
             'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
             'headers'   => [
-                'X-AUTH-TOKEN'  => 'schmier',
-                'headers' => $this->getAuthorizedHeaders('uno'),
                 'Authorization' => 'Bearer '.$token
             ],
-            // momentary
-            //'allow_redirects' => false
         ]);
 
         $response = $client->request(
             'POST',
             '/api/v1/senseddata',
-            ['json' => $json_test_package],
-            ['auth' => ['uno', 'uno']]
+            [
+                'json' => json_decode($this->json_test_package_A, true)
+            ]
         );
 
         var_dump($response->getBody()->getContents());
+
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -108,27 +104,83 @@ class ApiControllerTest extends WebTestCase
     }
 
     public function testGetGatewayDataUsingGatewayId() {
-        $gateway_id = 0;
+
+        $kernel = self::bootKernel();
+        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+            ->encode(['username' => 'uno']);
         $client = new Client([
             'base_uri'  => 'http://localhost',
             'timeout'   => 2.0,
             'headers'   => [
-                'X-AUTH-TOKEN'  => 'schmier',
-                'headers' => $this->getAuthorizedHeaders('uno'),
-                //'Authorization' => 'Bearer '.$token
+                'Authorization' => 'Bearer '. $token
             ],
-            // momentary
-            //'allow_redirects' => false
         ]);
-
+        $gateway_id = 12;
+        $limit = 1;
+        $endpoint = '/api/v1/gateway/' . $gateway_id;
+        if ($limit > 0) {
+            $endpoint = '/api/v1/gateway/' . $gateway_id . '/' . $limit;
+        }
         $response = $client->request(
             'GET',
-            '/api/v1/gateway/' . $gateway_id
-            //['json' => $json_test_package],
-            //['auth' => ['uno', 'uno']]
+            $endpoint
         );
 
-        var_dump($response);
+        //var_dump($response->getBody()->getContents());
+        $this->assertNotEmpty($response->getBody()->getContents());
     }
 
+    public function testGetGatewayNodes() {
+
+        $kernel = self::bootKernel();
+        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+            ->encode(['username' => 'uno']);
+        $client = new Client([
+            'base_uri'  => 'http://localhost',
+            'timeout'   => 2.0,
+            'headers'   => [
+                'Authorization' => 'Bearer '. $token
+            ],
+        ]);
+        $gateway_id = 12;
+        $node_id = 27;
+        $limit = 1;
+        $endpoint = '/api/v1/gatewaynodes/' . $gateway_id . '/' . $node_id . '/' . $limit;
+        if ($limit > 0) {
+            $endpoint = '/api/v1/gateway/' . $gateway_id . '/' . $limit;
+        }
+        $response = $client->request(
+            'GET',
+            $endpoint
+        );
+        //var_dump($response->getBody()->getContents());
+        $this->assertNotEmpty($response->getBody()->getContents());
+
+    }
+
+    public function testGetGatewayNodeSensors() {
+
+        $kernel = self::bootKernel();
+        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+            ->encode(['username' => 'uno']);
+        $client = new Client([
+            'base_uri'  => 'http://localhost',
+            'timeout'   => 2.0,
+            'headers'   => [
+                'Authorization' => 'Bearer '. $token
+            ],
+        ]);
+        $gateway_id = 12;
+        $node_id = 27;
+        $sensor_id = 5;
+        $limit = 1;
+        $endpoint = '/api/v1/nodeinfo/' . $gateway_id . '/' . $node_id . '/' .
+            $sensor_id . '/' . $limit;
+        $response = $client->request(
+            'GET',
+            $endpoint
+        );
+        //var_dump($response->getBody()->getContents());
+        $this->assertNotEmpty($response->getBody()->getContents());
+    }
 }
