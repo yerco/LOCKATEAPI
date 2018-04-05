@@ -44,11 +44,15 @@ class CapturedDataRequestListener implements EventSubscriberInterface
 //        });
     }
 
+    /**
+     * @param NodeSideEvent $event
+     * ($event->getJSON corresponds to `$request->getContent()`)
+     */
     public function onCapturedDataRequest(NodeSideEvent $event){
         // Check monolog configuration
         $this->logger->debug("Request to forward received: " . time());
-        //var_dump($event->getJSON());
         self::sendRequestToWebsite(self::FORWARD_URI_DEV, $event->getJSON());
+        //self::sendRequestToWebsite(self::FORWARD_URI_PROD, $event->getJSON());
         $event->stopPropagation();
     }
 
