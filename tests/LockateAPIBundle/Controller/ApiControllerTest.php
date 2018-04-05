@@ -13,58 +13,49 @@ class ApiControllerTest extends WebTestCase
     protected $json_test_package_C;
 
     protected function setUp() {
-        $json_test_package = '
-            {
-                "gateway_record": 
-                    [
-                        {
-                            "gateway_id": 0,
-                            "timestamp": "1519912976000", 
-                            "node_record": [
-                                        {
-                                        "node_id": 27, 
-                                        "timestamp": "1519912976000",
-                                        "di": {"di_1": "on", "di_2": "off"}, 
-                                        "ai": {"ai": 25.74}
-                                        }                      
-                                      ]  
-                        }
-                    ]
-            }
-        ';
-        // just cleaning this stuff above to make a proper json
-        $temp = str_replace(array("\n", "\r"), '', $json_test_package);
-        $temp = preg_replace('/\s+/', '', $temp);
-        $this->json_test_package_A = $temp;
 
         $json_test_package = '
             {
-                "gateway_record": 
-                [
+                "gateway_record": [
                     {
-                        "gateway_id": 2,
-                        "timestamp": "", 
+                        "gateway_id": 1,
+                        "gateway_summary": {
+                            "device": "RPI",
+                            "name": "naifo_gateway",
+                            "location": "penalolen"
+                        },
                         "node_record": [
                             {
-                                "node_id": 27, 
-                                "timestamp": "1519912976000",
-                                "di": {"di_1": "on", "di_2": "off"},  
-                                "ai": {"ai_1": 25.74}
-                            },
-                            {
-                                "node_id": 27, 
-                                "timestamp": "1519913380000",
-                                "di": {"di_1": "off", "di_2": "off"},  
-                                "ai": {"ai_1": 20.1}
-                            },
-                            {
-                                "node_id": 14, 
-                                "timestamp": "1519914560000",
-                                "di": {"di_1": "off", "di_2": "off", "di_3": "on"},  
-                                "do": {"do_1": "off"},
-                                "ai": {"ai_1": 23.1, "ai_2": 13.2, "ai_3": 0.45}
+                                "node_summary": {
+                                    "phones_around": 2,
+                                    "name": "naifo_node",
+                                    "phones_detected": 2
+                                },
+                                "node_id": 1,
+                                "timestamp": "1522437699",
+                                "sensor_record": [
+                                    {
+                                        "input": [
+                                            {
+                                                "rssi": -90.4125,
+                                                "company": "ARRIS Group, Inc.",
+                                                "mac": "54:65:de:60:d0:b0"
+                                            },
+                                            {
+                                                "rssi": -61.901408450704224,
+                                                "company": "HUAWEI TECHNOLOGIES CO.,LTD",
+                                                "mac": "7c:7d:3d:ab:c1:92"
+                                            }
+                                        ],
+                                        "sensor_id": 1,
+                                        "sensor_description": {
+                                            "name": "Atheros"
+                                        }
+                                    }
+                                ]
                             }
-                        ]    
+                        ],
+                        "timestamp": "1522437699"
                     }
                 ]
             }
@@ -72,31 +63,8 @@ class ApiControllerTest extends WebTestCase
         // just cleaning this stuff above to make a proper json
         $temp = str_replace(array("\n", "\r"), '', $json_test_package);
         $temp = preg_replace('/\s+/', '', $temp);
-        $this->json_test_package_B = $temp;
+        $this->json_test_package_A = $temp;
 
-        $json_test_package = '
-            {
-                "gateway_record": 
-                    [
-                        {
-                            "gateway_id": 0,
-                            "timestamp": "1521025377", 
-                            "node_record": [
-                                {
-                                "node_id": 27, 
-                                "timestamp": "1521025387",
-                                "ai": {"rssi": -86.0},
-                                "txt": {"mac": "90:e7:c4:xx:xx:xx", "company": "HTC Corporation"}
-                                }                      
-                            ]  
-                        }
-                    ]
-            }
-        ';
-        // just cleaning this stuff above to make a proper json
-        $temp = str_replace(array("\n", "\r"), '', $json_test_package);
-        $temp = preg_replace('/\s+/', '', $temp);
-        $this->json_test_package_C = $temp;
     }
 
     public function testSensedDataEndpointUsingGuzzle() {
@@ -107,7 +75,7 @@ class ApiControllerTest extends WebTestCase
 
         $json_test_package = json_encode($this->json_test_package_A);
         $client = new Client([
-            'base_uri'  => 'http://localhost',
+            'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
             'headers'   => [
                 'X-AUTH-TOKEN'  => 'schmier',
@@ -125,7 +93,7 @@ class ApiControllerTest extends WebTestCase
             ['auth' => ['uno', 'uno']]
         );
 
-//      // var_dump($response);
+        var_dump($response->getBody()->getContents());
         $this->assertEquals(200, $response->getStatusCode());
     }
 

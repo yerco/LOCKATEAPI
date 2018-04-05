@@ -8,6 +8,8 @@ use \Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class CapturedDataRequestListener implements EventSubscriberInterface
 {
@@ -15,6 +17,9 @@ class CapturedDataRequestListener implements EventSubscriberInterface
      * @var LoggerInterface
      */
     private $logger;
+    /* dev, prod settings */
+    const FORWARD_URI_DEV = 'http://localhost';
+    const FORWARD_URI_PROD = 'http://lockate.hopto.org';
 
     public function __construct(LoggerInterface $logger) {
         $this->logger = $logger;
@@ -41,8 +46,35 @@ class CapturedDataRequestListener implements EventSubscriberInterface
 
     public function onCapturedDataRequest(NodeSideEvent $event){
         // Check monolog configuration
-        $this->logger->debug("Request at: " . time());
+        $this->logger->debug("Request to forward received: " . time());
+        //var_dump($event->getJSON());
+        self::sendRequestToWebsite(self::FORWARD_URI_DEV, $event->getJSON());
         $event->stopPropagation();
+    }
+
+    private function sendRequestToWebsite($url, $json_string) {
+        $url = $url . '/site';
+        $username = "uno";
+        $password = "uno";
+        $client = new Client();
+        $options= array(
+            'auth' => [
+                $username,
+                $password
+            ],
+            'headers'  => ['content-type' => 'application/json', 'Accept' => 'application/json'],
+            'body' => $json_string,
+            "debug" => true
+        );
+        try {
+            $response = $client->post($url, $options);
+            var_dump($response->getBody()->getContents());
+        } catch (ClientException $e) {
+            echo $e->getRequest() . "\n";
+            if ($e->hasResponse()) {
+                echo $e->getResponse() . "\n";
+            }
+        }
     }
 
     public static function getSubscribedEvents()

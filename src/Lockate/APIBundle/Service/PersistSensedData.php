@@ -98,7 +98,7 @@ class PersistSensedData
         }
         catch(DriverException $e) {
             return array(
-                "message"   => "check json package (hint timestamp length)"
+                "message"   => $e->getMessage()
             );
         }
         $time = time();

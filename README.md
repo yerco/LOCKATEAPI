@@ -42,9 +42,13 @@ $ ./phpunit-6.5.phar --filter testSensedDataEndpointUsingGuzzle
 $ ./phpunit-6.5.phar --filter testGetGatewayDataUsingGatewayId
 $ ./phpunit-6.5.phar --filter testRetrieveGatewayThroughGatewayId
 $ ./phpunit-6.5.phar --filter testRetrieveGatewaySensors
-$ ./phpunit-6.5.phar --filter  testRetrieveSensor
+$ ./phpunit-6.5.phar --filter testRetrieveSensor
 ```
 
+External requests section
+```
+$ ./phpunit-6.5.phar tests/Extra/SendExternalRequestsTest.php 
+```
 
 ## Request examples using `curl`
 ```

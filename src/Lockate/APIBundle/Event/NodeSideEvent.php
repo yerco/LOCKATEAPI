@@ -8,8 +8,13 @@ class NodeSideEvent extends Event
 {
     const CAPTUREDDATAREQUEST = 'captureddata.request';
 
-    protected $json_sent;
+    public $json_sent;
 
+    /**
+     * NodeSideEvent constructor.
+     *
+     * @param $json_sent | package sent corresponds to `$request->getContent()`
+     */
     public function __construct($json_sent) {
         $this->json_sent = $json_sent;
     }

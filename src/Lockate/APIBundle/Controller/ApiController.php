@@ -27,6 +27,8 @@ class ApiController extends Controller
     public function sensedDataAction(Request $request) {
 
         $persist = $this->get('persist_senseddata');
+        //echo "\n\n\nHola\n";
+        //var_dump($request->getContent());
         $persistence_message = $persist->persistSensedData($request->getContent());
         $event_dispatcher = new EventDispatcher();
         $event = new NodeSideEvent($request->getContent());
