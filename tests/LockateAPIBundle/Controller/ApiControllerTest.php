@@ -183,4 +183,23 @@ class ApiControllerTest extends WebTestCase
         //var_dump($response->getBody()->getContents());
         $this->assertNotEmpty($response->getBody()->getContents());
     }
+
+    public function testGatewayTimeAction() {
+        $url = 'http://localhost:81/app_dev.php';
+        // /api/v1/bygatewaytime/{gateway_id}/{node_id}/{sensor_id}/{start_time}/{end_time}/{limit}
+        $url = $url . '/api/v1/bygatewaytime/1/1/1/2018-04-05/2018-04-05_15:34:40/2018-04-05_15:35/4';
+        $username = "uno";
+        $password = "uno";
+        $client = new Client();
+        $options= array(
+            'auth' => [
+                $username,
+                $password
+            ],
+            'headers'  => ['content-type' => 'application/json', 'Accept' => 'application/json'],
+            "debug" => true
+        );
+        $response = $client->get($url, $options);
+        var_dump($response->getBody()->getContents());
+    }
 }

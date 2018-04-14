@@ -41,3 +41,9 @@ lockate_api_sensor_info:
     requirements:
         gateway_id: '\d+'
     methods: [GET]
+
+lockate_api_record_gateway_time:
+    path:   /api/v1/bygatewaytime/{gateway_id}/{node_id}/{sensor_id}/{start_time}/{end_time}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:gatewayTime }
+    methods: [GET]
+

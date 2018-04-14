@@ -72,7 +72,7 @@ class CapturedDataRequestListener implements EventSubscriberInterface
         );
         try {
             $response = $client->post($url, $options);
-            var_dump($response->getBody()->getContents());
+            //var_dump($response->getBody()->getContents());
         } catch (ClientException $e) {
             echo $e->getRequest() . "\n";
             if ($e->hasResponse()) {

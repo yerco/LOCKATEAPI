@@ -34,8 +34,8 @@ class RetrieveSensedData
 
         for ($i = 0 ; $i < count($gateway_records); $i++){
             $gateway_info[$i] = array(
-                $gateway_records[$i]->getGatewaySummary(),
-                $gateway_records[$i]->getGatewayTimestamp(),
+                'gateway_summary'   => $gateway_records[$i]->getGatewaySummary(),
+                'gateway_timestamp' => $gateway_records[$i]->getGatewayTimestamp()->getTimestamp(),
                 "db_record_id"  => $gateway_records[$i]->getId()
             );
         }
@@ -106,7 +106,7 @@ class RetrieveSensedData
             if ($node_records[$i]["db_record_id"]) {
                 $sensorEntity = $this->entity_manager
                     ->getRepository(Sensor::class);
-                var_dump($node_records[$i]["db_record_id"]);
+                //var_dump($node_records[$i]["db_record_id"]);
                 $result = $sensorEntity->findBy(array(
                         "node"   => $node_records[$i]["db_record_id"],
                         "sensor_id" => $sensor_id
@@ -128,4 +128,64 @@ class RetrieveSensedData
         return $sensor_records;
     }
 
+    public function retrieveRecordsGatewayTime($gateway_id, $node_id, $sensor_id,
+        $start_date, $start_hour, $start_minute = 0, $start_second = 0,
+        $end_date, $end_hour, $end_minute = 0, $end_second = 0, $limit = PHP_INT_MAX) {
+
+        $start_time = $start_date . " " . $start_hour . ":" . $start_minute .
+            ":" . $start_second;
+        $end_time = $end_date . " " . $end_hour . ":" . $end_minute .
+            ":" . $end_second;
+
+        // Note: In DQL, the ON keyword is replaced by WITH.
+        $query = "
+                select g.gateway_id, g.gateway_summary, g.gateway_timestamp,
+                n.node_id, n.node_summary, n.node_timestamp as node_timestamp,
+                s.sensor_id, s.sensor_description, s.input, s.output
+                    from LockateAPIBundle:Gateway g
+                    inner join LockateAPIBundle:Node n
+                        with g.id = n.gateway
+                    inner join LockateAPIBundle:Sensor s    
+                    where
+                            g.gateway_id = " . $gateway_id . "
+                        and
+                            g.gateway_timestamp >= '" . $start_time . "'
+                        and 
+                            g.gateway_timestamp <= '". $end_time . "'
+                        and
+                            n.node_id = '" . $node_id . "'
+                        and    
+                           s.sensor_id = '" . $sensor_id . "'     
+                    order by g.id desc        
+         ";
+
+        $gateway_records = $this->entity_manager
+            ->createQuery($query)
+            ->setMaxResults($limit)
+            ->getResult();
+
+        return $gateway_records;
+    }
+
+    public function retrieveGatewayRecordsTime($gateway_id, $start_date,
+        $start_hour, $start_second, $end_date, $end_hour, $end_second ) {
+
+        $start_time = $start_date . " " . $start_hour . ":" . $start_second;
+        $end_time = $end_date . " " . $end_hour . ":" . $end_second;
+        $gateway_records = $this->entity_manager
+            ->createQuery("
+                select g.gateway_id, g.gateway_summary, g.gateway_timestamp
+                    from LockateAPIBundle:Gateway g
+                    where
+                            g.gateway_id = " . $gateway_id . "
+                        and
+                            g.gateway_timestamp >= '" . $start_time . "'
+                        and 
+                            g.gateway_timestamp <= '". $end_time . "'
+            ")
+            ->getResult();
+
+        //var_dump($gateway_records);
+        return $gateway_records;
+    }
 }

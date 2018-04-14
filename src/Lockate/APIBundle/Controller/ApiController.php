@@ -58,4 +58,39 @@ class ApiController extends Controller
             $sensor_id, $limit);
         return new JsonResponse(($sensor_info));
     }
+
+    /**
+     * @param $gateway_id - int
+     * @param $node_id - int
+     * @param $sensor_id - int
+     * @param $start_time - string YYYY-MM-SS_HHMMSS
+     * @param $end_time - string YYYY-MM-SS_HHMMSS
+     * @param $limit - string YYYY-MM-SS_HHMMSS
+     *
+     * @return JsonResponse
+     */
+    public function gatewayTimeAction($gateway_id, $node_id, $sensor_id,
+        $start_time, $end_time, $limit) {
+        $start = explode("_", $start_time);
+        $start_date = $start[0];
+        $starter = str_split($start[1], 2);
+        $start_hour = $starter[0];
+        $start_minute = $starter[1];
+        $start_second = $starter[2];
+        $end = explode("_", $end_time);
+        $end_date = $end[0];
+        $ender = str_split($end[1], 2);
+        $end_hour = $ender[0];
+        $end_minute = $ender[1];
+        $end_second = $ender[2];
+        $retrieve = $this->get('retrieve_senseddata');
+        $gateway_info = $retrieve->retrieveRecordsGatewayTime($gateway_id,
+            $node_id, $sensor_id,
+            $start_date, $start_hour, $start_minute, $start_second,
+            $end_date, $end_hour, $end_minute, $end_second, $limit
+        );
+
+        return new JsonResponse($gateway_info);
+    }
 }
+
