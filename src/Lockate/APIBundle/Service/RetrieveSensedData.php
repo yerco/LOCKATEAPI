@@ -145,7 +145,8 @@ class RetrieveSensedData
                     from LockateAPIBundle:Gateway g
                     inner join LockateAPIBundle:Node n
                         with g.id = n.gateway
-                    inner join LockateAPIBundle:Sensor s    
+                    inner join LockateAPIBundle:Sensor s
+                        with n.id = s.node    
                     where
                             g.gateway_id = " . $gateway_id . "
                         and
