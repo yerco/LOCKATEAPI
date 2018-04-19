@@ -51,16 +51,16 @@ security:
             # maybe other things, like form_login, remember_me, etc
             # ...
 
-            # FOSUserBundle
+            # FOSUserBundle needed to get the token
             pattern: ^/
             form_login:
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
                 always_use_default_target_path: true
                 default_target_path:            /site
-            remember_me:
-                secret: '%secret%'
-            logout: ~
+            #remember_me:
+            #    secret: '%secret%'
+            #logout: ~
 
     access_control:
           - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }

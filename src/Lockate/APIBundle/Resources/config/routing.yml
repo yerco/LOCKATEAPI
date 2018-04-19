@@ -16,6 +16,7 @@ lockate_api_sensors_payload:
     defaults: { _controller: LockateAPIBundle:Api:sensedData }
     methods:  [POST]
 
+# this route is whitelisted at JwtTokenAuthenticator.php `getCredentials`
 lockate_api_tokens:
     path:   /api/v1/tokens
     defaults: { _controller: LockateAPIBundle:Token:newToken }
@@ -45,5 +46,12 @@ lockate_api_sensor_info:
 lockate_api_record_gateway_time:
     path:   /api/v1/bygatewaytime/{gateway_id}/{node_id}/{sensor_id}/{start_time}/{end_time}/{limit}
     defaults: { _controller: LockateAPIBundle:Api:gatewayTime }
+    methods: [GET]
+
+# this route is whitelisted at JwtTokenAuthenticator.php `getCredentials`
+# no auth required!
+lockate_basic_auth_api_last_events:
+    path:   /api/v1/lastgatewayevents/{gateway_id}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:lastGatewayEvents }
     methods: [GET]
 

@@ -70,22 +70,13 @@ class RetrieveSensedDataTest extends KernelTestCase
         $this->assertInternalType('array', $response);
     }
 
-    public function testRetrieveGatewayRecordsUsingTime(){
+    public function testRetrieveLastEvents(){
+        $limit = 1;
         $gateway_id = 1;
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
-        $start_date = '2018-04-05';
-        $start_hour = '13';
-        $start_second = '17';
-        $end_date =  '2018-04-05';
-        $end_hour = '15';
-        $end_second = '35';
-        $response = $retriever->retrieveGatewayRecordsTime(
-            $gateway_id,
-            $start_date, $start_hour, $start_second,
-            $end_date, $end_hour, $end_second
-            );
-        var_dump($response);
+        $response = $retriever->retrieveLastGatewayEvents($gateway_id, $limit);
+        $this->assertEquals($limit, count($response));
     }
 }

@@ -54,6 +54,9 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
             ->getRepository('LockateAPIBundle:User')
             ->findOneBy(['username' => $request->getUser()]);
 
+        if ($request->get('_route') === 'lockate_basic_auth_api_last_events') {
+            return;
+        }
         // Important: Only to get tokens route and password
         if (isset($user) && $request->get('_route') === 'lockate_api_tokens') {;
             $isValid = $this->container->get('security.password_encoder')

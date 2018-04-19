@@ -43,6 +43,7 @@ $ ./phpunit-6.5.phar --filter testGetGatewayDataUsingGatewayId
 $ ./phpunit-6.5.phar --filter testRetrieveGatewayThroughGatewayId
 $ ./phpunit-6.5.phar --filter testRetrieveGatewaySensors
 $ ./phpunit-6.5.phar --filter testRetrieveSensor
+$ ./phpunit-6.5.phar --filter testRetrieveLastEvents
 ```
 
 External requests section

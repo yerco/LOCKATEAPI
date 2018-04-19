@@ -109,7 +109,7 @@ class ApiControllerTest extends WebTestCase
         $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
             ->encode(['username' => 'uno']);
         $client = new Client([
-            'base_uri'  => 'http://localhost',
+            'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
             'headers'   => [
                 'Authorization' => 'Bearer '. $token
@@ -136,7 +136,7 @@ class ApiControllerTest extends WebTestCase
         $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
             ->encode(['username' => 'uno']);
         $client = new Client([
-            'base_uri'  => 'http://localhost',
+            'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
             'headers'   => [
                 'Authorization' => 'Bearer '. $token
@@ -164,15 +164,15 @@ class ApiControllerTest extends WebTestCase
         $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
             ->encode(['username' => 'uno']);
         $client = new Client([
-            'base_uri'  => 'http://localhost',
+            'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
             'headers'   => [
                 'Authorization' => 'Bearer '. $token
             ],
         ]);
-        $gateway_id = 12;
-        $node_id = 27;
-        $sensor_id = 5;
+        $gateway_id = 1;//12;
+        $node_id = 1;//27;
+        $sensor_id = 1;//5;
         $limit = 1;
         $endpoint = '/api/v1/nodeinfo/' . $gateway_id . '/' . $node_id . '/' .
             $sensor_id . '/' . $limit;
@@ -187,19 +187,47 @@ class ApiControllerTest extends WebTestCase
     public function testGatewayTimeAction() {
         $url = 'http://localhost:81/app_dev.php';
         // /api/v1/bygatewaytime/{gateway_id}/{node_id}/{sensor_id}/{start_time}/{end_time}/{limit}
-        $url = $url . '/api/v1/bygatewaytime/1/1/1/2018-04-05/2018-04-05_15:34:40/2018-04-05_15:35/4';
-        $username = "uno";
-        $password = "uno";
-        $client = new Client();
-        $options= array(
-            'auth' => [
-                $username,
-                $password
+        $endpoint = '/api/v1/bygatewaytime/1/1/1/2018-04-13_00/2018-04-15_00/100';
+        $kernel = self::bootKernel();
+        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+            ->encode(['username' => 'uno']);
+        $client = new Client([
+            'base_uri'  => 'http://localhost:81',
+            'timeout'   => 2.0,
+            'headers'   => [
+                'Authorization' => 'Bearer '. $token
             ],
-            'headers'  => ['content-type' => 'application/json', 'Accept' => 'application/json'],
-            "debug" => true
+        ]);
+        $response = $client->request(
+            'GET',
+            $endpoint
         );
-        $response = $client->get($url, $options);
-        var_dump($response->getBody()->getContents());
+        //var_dump($response->getBody()->getContents());
+        $this->assertInternalType('string', $response->getBody()->getContents());
+    }
+
+    public function testLastGatewayEventsAction() {
+        $kernel = self::bootKernel();
+        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+            ->encode(['username' => 'uno']);
+        $client = new Client([
+            'base_uri'  => 'http://localhost:81',
+            'timeout'   => 2.0,
+            'headers'   => [
+                'Authorization' => 'Bearer '. $token
+            ],
+        ]);
+        $limit = 2;
+        $gateway_id = 1;
+        $endpoint = '/api/v1/lastgatewayevents/' . $gateway_id . '/' . $limit;
+        $response = $client->request(
+            'GET',
+            $endpoint
+        );
+        $packet = json_decode($response->getBody()->getContents());
+
+        $this->assertInternalType('string', $response->getBody()->getContents());
+        $this->assertEquals($limit, count($packet));
+
     }
 }

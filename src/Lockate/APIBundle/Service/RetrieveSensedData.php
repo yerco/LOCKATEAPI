@@ -168,24 +168,24 @@ class RetrieveSensedData
         return $gateway_records;
     }
 
-    public function retrieveGatewayRecordsTime($gateway_id, $start_date,
-        $start_hour, $start_second, $end_date, $end_hour, $end_second ) {
+    public function retrieveLastGatewayEvents($gateway_id, $limit) {
 
-        $start_time = $start_date . " " . $start_hour . ":" . $start_second;
-        $end_time = $end_date . " " . $end_hour . ":" . $end_second;
-        $gateway_records = $this->entity_manager
+        $query = $this->entity_manager
             ->createQuery("
-                select g.gateway_id, g.gateway_summary, g.gateway_timestamp
+                select g.gateway_id, g.gateway_summary, g.gateway_timestamp,
+                n.node_summary, n.node_timestamp as node_timestamp
                     from LockateAPIBundle:Gateway g
-                    where
-                            g.gateway_id = " . $gateway_id . "
-                        and
-                            g.gateway_timestamp >= '" . $start_time . "'
-                        and 
-                            g.gateway_timestamp <= '". $end_time . "'
-            ")
-            ->getResult();
+                    inner join LockateAPIBundle:Node n
+                    with g.id = n.gateway
+                    and g.gateway_id = " . $gateway_id . "
+                    order by g.gateway_timestamp desc
+                    "
+                    // limit " . $limit
+            )
+            //->getResult()
+            ->setMaxResults($limit);
 
+        $gateway_records = $query->getResult();
         //var_dump($gateway_records);
         return $gateway_records;
     }
