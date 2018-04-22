@@ -77,7 +77,7 @@ class PersistSensedData
                     else {
                         $node_timestamp = $date_node->setTimestamp(0);
                     }
-                    try{
+                    try {
                         $node = new Node();
                         $node->setGateway($gateway->getId());
                         $node->setNodeId($node_record->node_id);

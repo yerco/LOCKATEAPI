@@ -26,7 +26,7 @@ class Gateway
     /**
      * @ORM\Column(type="integer")
      */
-    private $gateway_id;
+    private $gateway_id_real;
 
     /**
      *
@@ -80,15 +80,15 @@ class Gateway
      */
     public function getGatewayId()
     {
-        return $this->gateway_id;
+        return $this->gateway_id_real;
     }
 
     /**
-     * @param mixed $gateway_id
+     * @param mixed $gateway_id_real
      */
-    public function setGatewayId($gateway_id)
+    public function setGatewayId($gateway_id_real)
     {
-        $this->gateway_id = $gateway_id;
+        $this->gateway_id_real = $gateway_id_real;
     }
 
     /**

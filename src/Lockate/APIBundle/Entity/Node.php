@@ -35,7 +35,7 @@ class Node
     /**
      * @ORM\Column(type="integer")
      */
-    private $node_id;
+    private $node_id_real;
 
     /**
      * Note: if using doctrine >= 2.6 use json instead of json_array
@@ -107,15 +107,15 @@ class Node
      */
     public function getNodeId()
     {
-        return $this->node_id;
+        return $this->node_id_real;
     }
 
     /**
-     * @param mixed $node_id
+     * @param mixed $node_id_real
      */
-    public function setNodeId($node_id)
+    public function setNodeId($node_id_real)
     {
-        $this->node_id = $node_id;
+        $this->node_id_real = $node_id_real;
     }
 
     /**
