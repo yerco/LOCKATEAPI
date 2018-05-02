@@ -27,7 +27,7 @@ class RetrieveSensedData
         $gateway_records = $this->entity_manager
             ->getRepository(Gateway::class)
             ->findBy(
-                array('gateway_id' => $gateway_id),
+                array('gateway_id_real' => $gateway_id),
                 array('id'      => 'DESC'),
                 $limit
             );
@@ -70,7 +70,7 @@ class RetrieveSensedData
                     ->getRepository(Node::class);
                 $result = $nodeEntity->findBy(array(
                     "gateway"   => $gateway_records[$i]["db_record_id"],
-                    "node_id"   => $node_id
+                    "node_id_real"   => $node_id
                     ),
                     array('id'      => 'DESC'),
                     $limit
@@ -139,8 +139,8 @@ class RetrieveSensedData
 
         // Note: In DQL, the ON keyword is replaced by WITH.
         $query = "
-                select g.gateway_id, g.gateway_summary, g.gateway_timestamp,
-                n.node_id, n.node_summary, n.node_timestamp as node_timestamp,
+                select g.gateway_id_real, g.gateway_summary, g.gateway_timestamp,
+                n.node_id_real, n.node_summary, n.node_timestamp as node_timestamp,
                 s.sensor_id, s.sensor_description, s.input, s.output
                     from LockateAPIBundle:Gateway g
                     inner join LockateAPIBundle:Node n
@@ -148,13 +148,13 @@ class RetrieveSensedData
                     inner join LockateAPIBundle:Sensor s
                         with n.id = s.node    
                     where
-                            g.gateway_id = " . $gateway_id . "
+                            g.gateway_id_real = " . $gateway_id . "
                         and
                             g.gateway_timestamp >= '" . $start_time . "'
                         and 
                             g.gateway_timestamp <= '". $end_time . "'
                         and
-                            n.node_id = '" . $node_id . "'
+                            n.node_id_real = '" . $node_id . "'
                         and    
                            s.sensor_id = '" . $sensor_id . "'     
                     order by g.id desc        
@@ -172,12 +172,12 @@ class RetrieveSensedData
 
         $query = $this->entity_manager
             ->createQuery("
-                select g.gateway_id, g.gateway_summary, g.gateway_timestamp,
+                select g.gateway_id_real, g.gateway_summary, g.gateway_timestamp,
                 n.node_summary, n.node_timestamp as node_timestamp
                     from LockateAPIBundle:Gateway g
                     inner join LockateAPIBundle:Node n
                     with g.id = n.gateway
-                    and g.gateway_id = " . $gateway_id . "
+                    and g.gateway_id_real = " . $gateway_id . "
                     order by g.gateway_timestamp desc
                     "
                     // limit " . $limit

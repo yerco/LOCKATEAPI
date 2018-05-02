@@ -20,6 +20,12 @@ class User extends BaseUser implements UserInterface
      */
     protected $id;
 
+    /**
+     *
+     * @ORM\Column(type="json_array")
+     */
+    private $user_gateway_sensors;
+
     public function getId()
     {
         return $this->id;

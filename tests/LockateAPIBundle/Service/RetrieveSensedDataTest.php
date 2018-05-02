@@ -9,7 +9,7 @@ class RetrieveSensedDataTest extends KernelTestCase
 {
     // Note: DB needs to be populated for gateway_id = 0
     public function testRetrieveGatewayThroughGatewayId() {
-        $gateway_id = 0;
+        $gateway_id = 1;
         $limit = 2;
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
@@ -20,22 +20,22 @@ class RetrieveSensedDataTest extends KernelTestCase
     }
 
     public function testRetrieveGatewayNodes() {
-        $gateway_id = 12;
-        $node_id = 27;
+        $gateway_id = 1;
+        $node_id = 1;
         $limit = null;
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
         $response = $retriever->retrieveGatewayNodes($gateway_id, $node_id, $limit);
-        var_dump($response);
+        //var_dump($response);
         $this->assertNotEmpty($response);
     }
 
     public function testRetrieveGatewayNodeSensors() {
-        $gateway_id = 12;
-        $node_id = 27;
-        $sensor_id = 5;
-        $limit = 1;
+        $gateway_id = 1;
+        $node_id = 1;
+        $sensor_id = 1;
+        $limit = 10;
         $kernel = self::bootKernel();
         $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $retriever = new RetrieveSensedData($entity_manager);
@@ -65,7 +65,7 @@ class RetrieveSensedDataTest extends KernelTestCase
             $start_date, $start_hour, $start_minute, $start_second,
             $end_date, $end_hour, $end_minute, $end_second,
             $limit
-        );
+        );z
         //var_dump($response);
         $this->assertInternalType('array', $response);
     }
