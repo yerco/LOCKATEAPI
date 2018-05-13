@@ -65,7 +65,7 @@ class RetrieveSensedDataTest extends KernelTestCase
             $start_date, $start_hour, $start_minute, $start_second,
             $end_date, $end_hour, $end_minute, $end_second,
             $limit
-        );z
+        );
         //var_dump($response);
         $this->assertInternalType('array', $response);
     }
