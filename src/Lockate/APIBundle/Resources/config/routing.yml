@@ -50,8 +50,12 @@ lockate_api_record_gateway_time:
 
 # this route is whitelisted at JwtTokenAuthenticator.php `getCredentials`
 # no auth required!
-lockate_basic_auth_api_last_events:
+lockate_cors_api_last_gateway_events:
     path:   /api/v1/lastgatewayevents/{gateway_id}/{limit}
     defaults: { _controller: LockateAPIBundle:Api:lastGatewayEvents }
     methods: [GET]
 
+lockate_cors_api_last_gateway_nodes_events:
+    path:   /api/v1/lastgatewaynodesevents/{gateway_id}/{node_id}/{limit}
+    defaults: { _controller: LockateAPIBundle:Api:lastGatewayNodesEvents }
+    methods: [GET]

@@ -79,4 +79,17 @@ class RetrieveSensedDataTest extends KernelTestCase
         $response = $retriever->retrieveLastGatewayEvents($gateway_id, $limit);
         $this->assertEquals($limit, count($response));
     }
+
+    public function testRetrieveLastGatewayNodesEvents() {
+        $limit = 1;
+        $gateway_id = 1;
+        $node_id = 1;
+        $kernel = self::bootKernel();
+        $entity_manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $retriever = new RetrieveSensedData($entity_manager);
+        $response = $retriever->retrieveLastGatewayNodesEvents(
+            $gateway_id, $node_id, $limit
+        );
+        $this->assertEquals($limit, count($response));
+    }
 }

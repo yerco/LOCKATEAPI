@@ -170,6 +170,7 @@ class RetrieveSensedData
 
     public function retrieveLastGatewayEvents($gateway_id, $limit) {
 
+        // Note gateway at ORM maps to gateway_id at DB
         $query = $this->entity_manager
             ->createQuery("
                 select g.gateway_id_real, g.gateway_summary, g.gateway_timestamp,
@@ -188,5 +189,24 @@ class RetrieveSensedData
         $gateway_records = $query->getResult();
         //var_dump($gateway_records);
         return $gateway_records;
+    }
+
+    public function retrieveLastGatewayNodesEvents($gateway_id, $node_id, $limit) {
+
+        // Note gateway at ORM maps to gateway_id at DB
+        $query = $this->entity_manager
+            ->createQuery("
+                select g.gateway_id_real, g.gateway_summary, g.gateway_timestamp, 
+	            n.node_id_real, n.node_summary, n.node_timestamp as node_timestamp
+		            from LockateAPIBundle:Gateway g
+		            inner join LockateAPIBundle:Node n
+		            with g.id = n.gateway
+		            and g.gateway_id_real = " . $gateway_id . "
+		            and n.node_id_real = " . $node_id . "
+		            order by g.gateway_timestamp desc
+            ")
+            ->setMaxResults($limit);;
+        $records = $query->getResult();
+        return $records;
     }
 }

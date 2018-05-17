@@ -98,5 +98,15 @@ class ApiController extends Controller
         $response->headers->set('Access-Control-Allow-Origin', '*');
         return $response;
     }
+
+    public function lastGatewayNodesEventsAction($gateway_id, $node_id, $limit) {
+        $retrieve = $this->get('retrieve_senseddata');
+        $last_events = $retrieve->retrieveLastGatewayNodesEvents(
+            $gateway_id, $node_id, $limit
+        );
+        $response = new JsonResponse($last_events);
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
+    }
 }
 

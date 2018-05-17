@@ -206,6 +206,7 @@ class ApiControllerTest extends WebTestCase
         $this->assertInternalType('string', $response->getBody()->getContents());
     }
 
+    /* Currently a while listed route */
     public function testLastGatewayEventsAction() {
         $kernel = self::bootKernel();
         $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
@@ -228,6 +229,25 @@ class ApiControllerTest extends WebTestCase
 
         $this->assertInternalType('string', $response->getBody()->getContents());
         $this->assertEquals($limit, count($packet));
+    }
 
+    /* Currently a while listed route */
+    public function testLastGatewayNodesEventsAction() {
+
+        $client = new Client([
+            'base_uri'  => 'http://localhost:81',
+            'timeout'   => 2.0,
+        ]);
+        $limit = 2;
+        $gateway_id = 1;
+        $node_id = 1;
+        $endpoint = '/api/v1/lastgatewaynodesevents/' . $gateway_id . '/' .
+            $node_id . '/' . $limit;
+        $response = $client->request(
+            'GET',
+            $endpoint
+        );
+        $packet = json_decode($response->getBody()->getContents());
+        $this->assertEquals($limit, count($packet));
     }
 }
