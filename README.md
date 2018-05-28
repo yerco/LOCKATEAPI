@@ -2,6 +2,16 @@
 
 ## Lockate API
 
+## Important Production and Development changes
+
+Check setting of **src/Lockate/APIBundle/EventListener/CapturedDataRequestListener.php**
+```php
+    const FORWARD_URI_DEV = 'http://localhost/app_dev.php';
+    const FORWARD_URI_PROD = 'http://lockate.hopto.org';
+```
+And what is used in function `onCapturedDataRequest`
+
+
 ## dev setup
 - PHP 7.1.7
 - Symfony 3.1.4
