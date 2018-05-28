@@ -76,4 +76,20 @@ class User extends BaseUser implements UserInterface
 
         return true;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUserGatewaySensors()
+    {
+        return $this->user_gateway_sensors;
+    }
+
+    /**
+     * @param mixed $user_gateway_sensors
+     */
+    public function setUserGatewaySensors($user_gateway_sensors)
+    {
+        $this->user_gateway_sensors = $user_gateway_sensors;
+    }
 }

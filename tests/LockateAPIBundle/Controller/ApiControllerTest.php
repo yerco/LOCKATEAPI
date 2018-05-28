@@ -5,6 +5,8 @@ namespace Lockate\APIBundle\Tests\Controller;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class ApiControllerTest extends WebTestCase
 {
@@ -69,9 +71,14 @@ class ApiControllerTest extends WebTestCase
     public function testSensedDataEndpointUsingGuzzle() {
 
         $kernel = self::bootKernel();
-        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
-            ->encode(['username' => 'uno']);
-
+        try {
+            $token = $kernel->getContainer()
+                ->get('lexik_jwt_authentication.encoder')
+                ->encode(['username' => 'uno']);
+        }
+        catch (JWTEncodeFailureException $e) {
+            echo $e->getMessage();
+        }
         $client = new Client([
             'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
@@ -80,13 +87,18 @@ class ApiControllerTest extends WebTestCase
             ],
         ]);
 
-        $response = $client->request(
-            'POST',
-            '/api/v1/senseddata',
-            [
-                'json' => json_decode($this->json_test_package_A, true)
-            ]
-        );
+        try {
+            $response = $client->request(
+                'POST',
+                '/api/v1/senseddata',
+                [
+                    'json' => json_decode($this->json_test_package_A, true)
+                ]
+            );
+        }
+        catch (GuzzleException $e) {
+            echo $e->getMessage();
+        }
 
         var_dump($response->getBody()->getContents());
 
@@ -95,9 +107,13 @@ class ApiControllerTest extends WebTestCase
 
     protected function getAuthorizedHeaders($username, $headers = array()) {
         $kernel = self::bootKernel();
-        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
-            ->encode(['username' => $username]);
-
+        try {
+            $token = $kernel->getContainer()
+                ->get('lexik_jwt_authentication.encoder')
+                ->encode(['username' => $username]);
+        } catch (JWTEncodeFailureException $e) {
+            echo $e->getMessage();
+        }
         $headers['Authorization'] = 'Bearer '.$token;
 
         return $headers;
@@ -106,8 +122,13 @@ class ApiControllerTest extends WebTestCase
     public function testGetGatewayDataUsingGatewayId() {
 
         $kernel = self::bootKernel();
-        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
-            ->encode(['username' => 'uno']);
+        try {
+            $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+                ->encode(['username' => 'uno']);
+        }
+        catch (JWTEncodeFailureException $e) {
+            echo $e->getMessage();
+        }
         $client = new Client([
             'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
@@ -121,10 +142,15 @@ class ApiControllerTest extends WebTestCase
         if ($limit > 0) {
             $endpoint = '/api/v1/gateway/' . $gateway_id . '/' . $limit;
         }
-        $response = $client->request(
-            'GET',
-            $endpoint
-        );
+        try {
+            $response = $client->request(
+                'GET',
+                $endpoint
+            );
+        }
+        catch (GuzzleException $e) {
+            echo $e->getMessage();
+        }
 
         //var_dump($response->getBody()->getContents());
         $this->assertNotEmpty($response->getBody()->getContents());
@@ -133,8 +159,13 @@ class ApiControllerTest extends WebTestCase
     public function testGetGatewayNodes() {
 
         $kernel = self::bootKernel();
-        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
-            ->encode(['username' => 'uno']);
+        try {
+            $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+                ->encode(['username' => 'uno']);
+        }
+        catch (JWTEncodeFailureException $e) {
+            echo $e->getMessage();
+        }
         $client = new Client([
             'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
@@ -149,10 +180,15 @@ class ApiControllerTest extends WebTestCase
         if ($limit > 0) {
             $endpoint = '/api/v1/gateway/' . $gateway_id . '/' . $limit;
         }
-        $response = $client->request(
-            'GET',
-            $endpoint
-        );
+        try {
+            $response = $client->request(
+                'GET',
+                $endpoint
+            );
+        }
+        catch (GuzzleException $e) {
+            echo $e->getMessage();
+        }
         //var_dump($response->getBody()->getContents());
         $this->assertNotEmpty($response->getBody()->getContents());
 
@@ -161,8 +197,13 @@ class ApiControllerTest extends WebTestCase
     public function testGetGatewayNodeSensors() {
 
         $kernel = self::bootKernel();
-        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
-            ->encode(['username' => 'uno']);
+        try {
+            $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+                ->encode(['username' => 'uno']);
+        }
+        catch (JWTEncodeFailureException $e) {
+            echo $e->getMessage();
+        }
         $client = new Client([
             'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
@@ -176,10 +217,15 @@ class ApiControllerTest extends WebTestCase
         $limit = 1;
         $endpoint = '/api/v1/nodeinfo/' . $gateway_id . '/' . $node_id . '/' .
             $sensor_id . '/' . $limit;
-        $response = $client->request(
-            'GET',
-            $endpoint
-        );
+        try {
+            $response = $client->request(
+                'GET',
+                $endpoint
+            );
+        }
+        catch (GuzzleException $e) {
+            echo $e->getMessage();
+        }
         //var_dump($response->getBody()->getContents());
         $this->assertNotEmpty($response->getBody()->getContents());
     }
@@ -189,8 +235,13 @@ class ApiControllerTest extends WebTestCase
         // /api/v1/bygatewaytime/{gateway_id}/{node_id}/{sensor_id}/{start_time}/{end_time}/{limit}
         $endpoint = '/api/v1/bygatewaytime/1/1/1/2018-04-13_00/2018-04-15_00/100';
         $kernel = self::bootKernel();
-        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
-            ->encode(['username' => 'uno']);
+        try {
+            $token = $kernel->getContainer()
+                ->get('lexik_jwt_authentication.encoder')
+                ->encode(['username' => 'uno']);
+        } catch (JWTEncodeFailureException $e) {
+            echo $e->getMessage();
+        }
         $client = new Client([
             'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
@@ -198,10 +249,14 @@ class ApiControllerTest extends WebTestCase
                 'Authorization' => 'Bearer '. $token
             ],
         ]);
-        $response = $client->request(
-            'GET',
-            $endpoint
-        );
+        try {
+            $response = $client->request(
+                'GET',
+                $endpoint
+            );
+        } catch (GuzzleException $e) {
+            echo $e->getMessage();
+        }
         //var_dump($response->getBody()->getContents());
         $this->assertInternalType('string', $response->getBody()->getContents());
     }
@@ -209,8 +264,13 @@ class ApiControllerTest extends WebTestCase
     /* Currently a while listed route */
     public function testLastGatewayEventsAction() {
         $kernel = self::bootKernel();
-        $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
-            ->encode(['username' => 'uno']);
+        try{
+            $token = $kernel->getContainer()->get('lexik_jwt_authentication.encoder')
+                ->encode(['username' => 'uno']);
+        }
+        catch (JWTEncodeFailureException $e) {
+            echo $e->getMessage();
+        }
         $client = new Client([
             'base_uri'  => 'http://localhost:81',
             'timeout'   => 2.0,
@@ -221,10 +281,14 @@ class ApiControllerTest extends WebTestCase
         $limit = 2;
         $gateway_id = 1;
         $endpoint = '/api/v1/lastgatewayevents/' . $gateway_id . '/' . $limit;
-        $response = $client->request(
-            'GET',
-            $endpoint
-        );
+        try {
+            $response = $client->request(
+                'GET',
+                $endpoint
+            );
+        } catch (GuzzleException $e) {
+            echo $e->getMessage();
+        }
         $packet = json_decode($response->getBody()->getContents());
 
         $this->assertInternalType('string', $response->getBody()->getContents());
@@ -243,10 +307,14 @@ class ApiControllerTest extends WebTestCase
         $node_id = 1;
         $endpoint = '/api/v1/lastgatewaynodesevents/' . $gateway_id . '/' .
             $node_id . '/' . $limit;
-        $response = $client->request(
-            'GET',
-            $endpoint
-        );
+        try {
+            $response = $client->request(
+                'GET',
+                $endpoint
+            );
+        } catch (GuzzleException $e) {
+            echo $e->getMessage();
+        }
         $packet = json_decode($response->getBody()->getContents());
         $this->assertEquals($limit, count($packet));
     }

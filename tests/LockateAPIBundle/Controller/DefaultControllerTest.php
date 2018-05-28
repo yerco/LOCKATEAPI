@@ -4,7 +4,9 @@ namespace Lockate\APIBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+// Client Exception inherits from GuzzleException so commented out
+//use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class DefaultControllerTest extends WebTestCase
 {
@@ -26,7 +28,12 @@ class DefaultControllerTest extends WebTestCase
             'base_uri'  => 'http://localhost',
             'timeout'   => 2.0
         ]);
-        $response = $client->request('GET', '/');
+        try {
+            $response = $client->request('GET', '/');
+        }
+        catch(GuzzleException $e) {
+            echo $e->getMessage();
+        }
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -45,13 +52,14 @@ class DefaultControllerTest extends WebTestCase
             'var1'      => 'fatboyslim'
         ];
         try {
-            $response = $client->request(
+            $client->request(
                 'POST',
                 '/api/v1/sensors',
                 ['json' => $json_payload]
             );
         }
-        catch (ClientException $e) {
+        catch(GuzzleException $e) {
+            echo $e->getMessage();
             $this->assertEquals(403, $e->getCode());
         }
     }
@@ -69,11 +77,17 @@ class DefaultControllerTest extends WebTestCase
             'var1'      => 'fatboyslim'
         ];
 
+        try {
             $response = $client->request(
                 'POST',
                 '/api/v1/sensors',
                 ['json' => $json_payload]
             );
+        }
+        catch(GuzzleException $e) {
+            echo $e->getMessage();
+            $this->assertEquals(403, $e->getCode());
+        }
         $this->assertEquals(302, $response->getStatusCode());
     }
 
@@ -111,11 +125,17 @@ class DefaultControllerTest extends WebTestCase
             'timestamp' => 1234567890,
             'var1'      => 'fatboyslim'
         ];
-        $response = $client->request(
-            'POST',
-            '/api/v1/sensors',
-            [ 'json' => $json_payload ]
-        );
+        try {
+            $response = $client->request(
+                'POST',
+                '/api/v1/sensors',
+                ['json' => $json_payload]
+            );
+        }
+        catch(GuzzleException $e) {
+            echo $e->getMessage();
+            $this->assertEquals(403, $e->getCode());
+        }
         $json_received = (array) json_decode($response->getBody()->getContents());
         $this->assertEquals($json_payload, $json_received);
     }
