@@ -20,6 +20,7 @@ class CapturedDataRequestListener implements EventSubscriberInterface
     /* dev, prod settings */
     const FORWARD_URI_DEV = 'http://localhost/app_dev.php';
     const FORWARD_URI_PROD = 'http://lockate.hopto.org';
+    const FORWARD_URI_DOCKER = 'http://lockate_site:8080';
 
     public function __construct(LoggerInterface $logger) {
         $this->logger = $logger;
@@ -51,8 +52,9 @@ class CapturedDataRequestListener implements EventSubscriberInterface
     public function onCapturedDataRequest(NodeSideEvent $event){
         // Check monolog configuration
         $this->logger->debug("Request to forward received: " . time());
-        self::sendRequestToWebsite(self::FORWARD_URI_DEV, $event->getJSON());
+        //self::sendRequestToWebsite(self::FORWARD_URI_DEV, $event->getJSON());
         //self::sendRequestToWebsite(self::FORWARD_URI_PROD, $event->getJSON());
+        self::sendRequestToWebsite(self::FORWARD_URI_DOCKER, $event->getJSON());
         $event->stopPropagation();
     }
 
