@@ -44,10 +44,11 @@ COPY  --chown=appuser:appuser public.pem /var/www/html/lockate_api/var/jwt
 
 # symfony
 RUN ./composer.phar install
-RUN chmod +w ./var/logs/* && chmod +w ./var/cache/*
-RUN chmod -R a+w ./var/sessions
 RUN ./composer.phar dump-autoload
+RUN rm -rf /var/www/html/lockate_site/var/cache/*
+RUN rm -rf /var/www/html/lockate_site/var/logs/*
+RUN rm -rf /var/www/html/lockate_site/var/sessions/*
 
-EXPOSE 8081
+#EXPOSE 8081
 
-CMD ["php", "bin/console", "server:run", "-vvv", "*:8081"]
+#CMD ["php", "bin/console", "server:run", "-vvv", "*:8081"]
